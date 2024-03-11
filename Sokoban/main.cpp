@@ -1,9 +1,16 @@
 #include <SFML/Graphics.hpp>
 
+#include "Sokoban.hpp"
+
 int main(void) {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Sokoban");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+
+    Sokoban sokoban("map.txt");
+
+    window.clear();
+    //window.draw(sokoban);
+    sokoban.draw(window, sf::RenderStates());
+    window.display();
 
     while (window.isOpen()) {
         sf::Event event;
@@ -12,9 +19,7 @@ int main(void) {
                 window.close();
         }
 
-        window.clear();
-        window.draw(shape);
-        window.display();
+
     }
 
     return 0;
