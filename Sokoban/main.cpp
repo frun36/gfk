@@ -3,23 +3,31 @@
 #include "Sokoban.hpp"
 
 int main(void) {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Sokoban");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Sokoban", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
     Sokoban sokoban("map.txt");
 
-    window.clear();
-    //window.draw(sokoban);
-    sokoban.draw(window, sf::RenderStates());
-    window.display();
+    sokoban.setScale(window.getSize());
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+            switch (event.type) {
+            case sf::Event::Closed:
                 window.close();
+                break;
+            case sf::Event::Resized:
+                float width = static_cast<float>(event.size.width);
+                float height = static_cast<float>(event.size.height);
+                window.setView(sf::View(sf::FloatRect(0, 0, width, height)));
+                sokoban.setScale(sf::Vector2u(event.size.width, event.size.height));
+                break;
+            }
         }
 
-
+        window.clear();
+        window.draw(sokoban);
+        window.display();
     }
 
     return 0;

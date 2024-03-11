@@ -9,14 +9,19 @@ enum State { EMPTY, WALL, FLOOR, TARGET, CHEST };
 class Field : public sf::Drawable {
 private:
 	State _state = State::EMPTY;
-	float _size = 100;
-	float _x = 100;
-	float _y = 200;
+	float _x = 0;
+	float _y = 0;
+	sf::RectangleShape _rect;
+	float _scale = 1.;
 public:
-	Field(float x = 0, float y = 0, State state = State::EMPTY) : _x(x), _y(y), _state(state) {}
+	Field(float x = 0, float y = 0, float scale = 1, State state = State::EMPTY) : _x(x), _y(y), _scale(scale), _state(state) {}
+
+	void setScale(float scale) {
+		_scale = scale;
+	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		std::cout << "Drawing field " << _state << '\n';
+		//std::cout << "Drawing field " << _state << '\n';
 		sf::Color color;
 		switch (_state) {
 		case State::EMPTY:
@@ -36,9 +41,10 @@ public:
 			break;
 		}
 
-		sf::RectangleShape shape(sf::Vector2f(_size, _size));
+		sf::RectangleShape shape(sf::Vector2f(_scale, _scale));
+
 		shape.setFillColor(color);
-		shape.setPosition(_x, _y);
+		shape.setPosition(sf::Vector2f(_x * _scale, _y * _scale));
 		target.draw(shape);
 	}
 };

@@ -10,6 +10,7 @@ class Sokoban : public sf::Drawable {
 private:
 	size_t _x, _y;
 	std::vector<std::vector<Field>> _map;
+	float _scale = 1.;
 public:
 	Sokoban(std::string filename) : _x(2), _y(1) {
 		std::ifstream file(filename);
@@ -37,13 +38,22 @@ public:
 			for (auto c : line) {
 				size_t value = c - '0';
 				std::cout << value << '\n';
-				_map[y_pos][x_pos] = Field(x_pos*100, y_pos*100, static_cast<State>(value));
+				_map[y_pos][x_pos] = Field(x_pos, y_pos, 100, static_cast<State>(value));
 				x_pos++;
 			}
 			y_pos++;
 		}
 
 		file.close();
+	}
+
+	void setScale(sf::Vector2u size) {
+		_scale = std::fmin(static_cast<float>(size.x) / _x, static_cast<float>(size.y) / _y);
+		for (auto& row : _map) {
+			for (auto& field : row) {
+				field.setScale(_scale);
+			}
+		}
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
