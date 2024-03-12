@@ -158,6 +158,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Chest.hpp" />
     <ClInclude Include="Field.hpp" />
     <ClInclude Include="Sokoban.hpp" />
   </ItemGroup>
