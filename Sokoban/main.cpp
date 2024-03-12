@@ -40,7 +40,7 @@ int main(void) {
 					sokoban.movePlayer(Sokoban::Direction::LEFT);
 					break;
 				}
-				
+				std::cout << sokoban.checkWin() << '\n';
 				break;
 			}
 		}

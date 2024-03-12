@@ -7,6 +7,8 @@
 #include "Player.hpp"
 #include <iostream>
 #include <fstream>
+#include <optional>
+#include <functional>
 
 class Sokoban : public sf::Drawable {
 public:
@@ -36,6 +38,24 @@ private:
 		}
 	}
 
+	std::optional<std::reference_wrapper<Chest>> getChestAtPosition(sf::Vector2u position) {
+		for (auto& chest : _chests) {
+			if (chest.getPosition() == position) {
+				return std::optional<std::reference_wrapper<Chest>>(chest);
+			}
+		}
+		return std::optional<std::reference_wrapper<Chest>>();
+	}
+
+	bool isChestAtPosition(sf::Vector2u position) {
+		return getChestAtPosition(position).has_value();
+	}
+
+	bool isAvailableForChest(sf::Vector2i position) {
+		if (position.x < 0 || position.y < 0 || position.x >= static_cast<int>(_x) || position.y >= static_cast<int>(_y))
+			return false;
+		return _map[position.y][position.x].isOccupyable() && !isChestAtPosition(sf::Vector2u(position.x, position.y));
+	}
 public:
 	Sokoban(std::string filename) {
 		std::ifstream file(filename);
@@ -119,16 +139,38 @@ public:
 		target.draw(_player);
 	}
 
+	bool checkWin() const {
+		for (auto& chest : _chests) {
+			if (!_map[chest.getPosition().y][chest.getPosition().x].isTarget()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	void movePlayer(Direction direction) {
 		sf::Vector2i motion = getMotionFromDirection(direction);
 		sf::Vector2u currentPosition = _player.getPosition();
-		sf::Vector2i newPosition = sf::Vector2i(currentPosition.x + motion.x, currentPosition.y + motion.y);
+		int newX = currentPosition.x + motion.x;
+		int newY = currentPosition.y + motion.y;
 
 		// Is within map range
-		if (newPosition.x < 0 || newPosition.y < 0 || newPosition.x >= _x || newPosition.y >= _y) return;
+		if (newX < 0 || newY < 0 || newX >= static_cast<int>(_x) || newY >= static_cast<int>(_y))
+			return;
+
+		sf::Vector2u newPosition = sf::Vector2u(newX, newY);
 
 		// Is occupyable
-		if (!_map[currentPosition.y + motion.y][currentPosition.x + motion.x].isOccupyable()) return;
+		if (!_map[newPosition.y][newPosition.x].isOccupyable())
+			return;
+
+		// Chest
+		if (isChestAtPosition(newPosition)) {
+			if (isAvailableForChest(sf::Vector2i(newPosition.x + motion.x, newPosition.y + motion.y)))
+				getChestAtPosition(newPosition).value().get().move(motion);
+			else
+				return;
+		}
 
 		_player.move(motion);
 	}

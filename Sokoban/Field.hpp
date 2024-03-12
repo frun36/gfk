@@ -48,8 +48,12 @@ public:
 		target.draw(_rect);
 	}
 
-	bool isOccupyable() {
+	bool isOccupyable() const {
 		return _state != State::WALL && _state != State::EMPTY;
+	}
+
+	bool isTarget() const {
+		return _state == State::TARGET;
 	}
 };
 

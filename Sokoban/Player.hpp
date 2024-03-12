@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-static constexpr float PLAYER_RATIO = 0.9;
+static constexpr float PLAYER_RATIO = 0.9f;
 
 class Player : public sf::Drawable {
 private:
@@ -37,7 +37,7 @@ public:
 		updateCirclePosition();
 	}
 
-	sf::Vector2u getPosition() {
+	const sf::Vector2u& getPosition() {
 		return _position;
 	}
 };
