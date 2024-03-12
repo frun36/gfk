@@ -159,7 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chest.hpp" />
+    <ClInclude Include="Direction.hpp" />
     <ClInclude Include="Field.hpp" />
+    <ClInclude Include="Player.hpp" />
     <ClInclude Include="Sokoban.hpp" />
   </ItemGroup>
   <ItemGroup>

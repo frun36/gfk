@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Field.hpp"
 #include "Chest.hpp"
+#include "Player.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -12,7 +13,7 @@ private:
 	unsigned int _x, _y;
 	std::vector<std::vector<Field>> _map;
 	std::vector<Chest> _chests;
-	sf::Vector2u _player;
+	Player _player;
 	float _scale = 1.;
 public:
 	Sokoban(std::string filename) {
@@ -42,7 +43,7 @@ public:
 		// Get player position
 		std::getline(file, line);
 		sscanf_s(line.c_str(), "%u,%u", &tmpX, &tmpY);
-		_player = sf::Vector2u(tmpX, tmpY);
+		_player = Player(sf::Vector2u(tmpX, tmpY));
 		std::cout << "Player position: " << tmpX << ", " << tmpY << '\n';
 
 		// Set dimensions
@@ -79,6 +80,8 @@ public:
 				field.setScale(_scale);
 			}
 		}
+
+		_player.setScale(_scale);
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -91,6 +94,8 @@ public:
 		for (auto& chest : _chests) {
 			target.draw(chest);
 		}
+
+		target.draw(_player);
 	}
 };
 

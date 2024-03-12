@@ -29,6 +29,12 @@
     <ClInclude Include="Chest.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Player.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="map.txt" />
