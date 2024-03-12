@@ -5,17 +5,37 @@
 #include "Field.hpp"
 #include "Chest.hpp"
 #include "Player.hpp"
-#include "Direction.hpp"
 #include <iostream>
 #include <fstream>
 
 class Sokoban : public sf::Drawable {
+public:
+	enum class Direction {
+		DOWN,
+		RIGHT,
+		UP,
+		LEFT,
+	};
 private:
 	unsigned int _x, _y;
 	std::vector<std::vector<Field>> _map;
 	std::vector<Chest> _chests;
 	Player _player;
 	float _scale = 1.;
+
+	sf::Vector2i getMotionFromDirection(Direction direction) {
+		switch (direction) {
+		case Direction::DOWN:
+			return sf::Vector2i(0, 1);
+		case Direction::RIGHT:
+			return sf::Vector2i(1, 0);
+		case Direction::UP:
+			return sf::Vector2i(0, -1);
+		case Direction::LEFT:
+			return sf::Vector2i(-1, 0);
+		}
+	}
+
 public:
 	Sokoban(std::string filename) {
 		std::ifstream file(filename);
@@ -100,7 +120,17 @@ public:
 	}
 
 	void movePlayer(Direction direction) {
-		_player.move(direction);
+		sf::Vector2i motion = getMotionFromDirection(direction);
+		sf::Vector2u currentPosition = _player.getPosition();
+		sf::Vector2i newPosition = sf::Vector2i(currentPosition.x + motion.x, currentPosition.y + motion.y);
+
+		// Is within map range
+		if (newPosition.x < 0 || newPosition.y < 0 || newPosition.x >= _x || newPosition.y >= _y) return;
+
+		// Is occupyable
+		if (!_map[currentPosition.y + motion.y][currentPosition.x + motion.x].isOccupyable()) return;
+
+		_player.move(motion);
 	}
 };
 

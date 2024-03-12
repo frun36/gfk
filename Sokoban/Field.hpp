@@ -47,6 +47,10 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		target.draw(_rect);
 	}
+
+	bool isOccupyable() {
+		return _state != State::WALL && _state != State::EMPTY;
+	}
 };
 
 #endif

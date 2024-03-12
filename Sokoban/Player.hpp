@@ -3,8 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Direction.hpp"
-
 static constexpr float PLAYER_RATIO = 0.9;
 
 class Player : public sf::Drawable {
@@ -33,22 +31,14 @@ public:
 		target.draw(_circle);
 	}
 
-	void move(Direction direction) {
-		switch (direction) {
-		case Direction::DOWN:
-			_position.y += 1;
-			break;
-		case Direction::RIGHT:
-			_position.x += 1;
-			break;
-		case Direction::UP:
-			_position.y -= 1;
-			break;
-		case Direction::LEFT:
-			_position.x -= 1;
-			break;
-		}
+	void move(sf::Vector2i motion) {
+		_position.x += motion.x;
+		_position.y += motion.y;
 		updateCirclePosition();
+	}
+
+	sf::Vector2u getPosition() {
+		return _position;
 	}
 };
 

@@ -28,16 +28,16 @@ int main(void) {
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Down:
-					sokoban.movePlayer(Direction::DOWN);
+					sokoban.movePlayer(Sokoban::Direction::DOWN);
 					break;
 				case sf::Keyboard::Right:
-					sokoban.movePlayer(Direction::RIGHT);
+					sokoban.movePlayer(Sokoban::Direction::RIGHT);
 					break;
 				case sf::Keyboard::Up:
-					sokoban.movePlayer(Direction::UP);
+					sokoban.movePlayer(Sokoban::Direction::UP);
 					break;
 				case sf::Keyboard::Left:
-					sokoban.movePlayer(Direction::LEFT);
+					sokoban.movePlayer(Sokoban::Direction::LEFT);
 					break;
 				}
 				
