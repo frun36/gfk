@@ -5,6 +5,7 @@
 #include "Field.hpp"
 #include "Chest.hpp"
 #include "Player.hpp"
+#include "Direction.hpp"
 #include <iostream>
 #include <fstream>
 
@@ -96,6 +97,10 @@ public:
 		}
 
 		target.draw(_player);
+	}
+
+	void movePlayer(Direction direction) {
+		_player.move(direction);
 	}
 };
 
