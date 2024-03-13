@@ -5,6 +5,7 @@
 #include "Field.hpp"
 #include "Chest.hpp"
 #include "Player.hpp"
+#include "Counter.hpp"
 #include <iostream>
 #include <fstream>
 #include <optional>
@@ -20,6 +21,7 @@ public:
 	};
 private:
 	unsigned int _x, _y;
+	Counter _moveCounter;
 	std::vector<std::vector<Field>> _map;
 	std::vector<Chest> _chests;
 	Player _player;
@@ -57,7 +59,7 @@ private:
 		return _map[position.y][position.x].isOccupyable() && !isChestAtPosition(sf::Vector2u(position.x, position.y));
 	}
 public:
-	Sokoban(std::string filename) {
+	Sokoban(std::string filename) : _moveCounter(Counter()) {
 		std::ifstream file(filename);
 
 		if (!file.is_open()) {
@@ -123,6 +125,7 @@ public:
 		}
 
 		_player.setScale(_scale);
+		_moveCounter.setScale(_scale);
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -137,6 +140,7 @@ public:
 		}
 
 		target.draw(_player);
+		target.draw(_moveCounter);
 	}
 
 	bool checkWin() const {
@@ -173,6 +177,7 @@ public:
 		}
 
 		_player.move(motion);
+		_moveCounter.increment();
 	}
 };
 
