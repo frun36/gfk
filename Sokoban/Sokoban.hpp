@@ -27,6 +27,7 @@ private:
 	Player _player;
 	float _scale = 1.;
 	sf::Vector2i _offset;
+	bool _modified;
 
 	sf::Vector2i getMotionFromDirection(Direction direction) {
 		switch (direction) {
@@ -60,7 +61,7 @@ private:
 		return _map[position.y][position.x].isOccupyable() && !isChestAtPosition(sf::Vector2u(position.x, position.y));
 	}
 public:
-	Sokoban(std::string filename) : _moveCounter(Counter()), _offset(sf::Vector2i(100, 50)) {
+	Sokoban(std::string filename) : _moveCounter(Counter()), _offset(sf::Vector2i(100, 50)), _modified(true) {
 		std::ifstream file(filename);
 
 		if (!file.is_open()) {
@@ -131,9 +132,15 @@ public:
 
 		_player.setScale(_scale, _offset);
 		_moveCounter.setScale(_scale, _offset);
+
+		_modified = true;
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		if (!_modified) {
+			return;
+		}
+
 		for (auto& row : _map) {
 			for (auto& field : row) {
 				target.draw(field);
@@ -183,6 +190,15 @@ public:
 
 		_player.move(motion);
 		_moveCounter.increment();
+		_modified = true;
+	}
+
+	void markUnmodified() {
+		_modified = false;
+	}
+
+	bool isModified() const {
+		return _modified;
 	}
 };
 

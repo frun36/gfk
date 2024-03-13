@@ -47,9 +47,13 @@ int main(void) {
 			}
 		}
 
-		window.clear();
-		window.draw(sokoban);
-		window.display();
+		if (sokoban.isModified()) {
+			window.clear();
+			window.draw(sokoban);
+			sokoban.markUnmodified();
+			window.display();
+		}
+		
 
 		if (sokoban.checkWin()) {
 			MessageBoxA(NULL, "You completed the game!", "You won!", MB_OK);
