@@ -2,6 +2,9 @@
 
 #include "Sokoban.hpp"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 int main(void) {
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Sokoban", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
@@ -40,7 +43,6 @@ int main(void) {
 					sokoban.movePlayer(Sokoban::Direction::LEFT);
 					break;
 				}
-				std::cout << sokoban.checkWin() << '\n';
 				break;
 			}
 		}
@@ -48,6 +50,11 @@ int main(void) {
 		window.clear();
 		window.draw(sokoban);
 		window.display();
+
+		if (sokoban.checkWin()) {
+			MessageBoxA(NULL, "You completed the game!", "You won!", MB_OK);
+			return 0;
+		}
 	}
 
 	return 0;

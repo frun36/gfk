@@ -12,8 +12,9 @@ private:
 	sf::Vector2u _position;
 	sf::RectangleShape _rect;
 	float _scale = 1.;
+	sf::Vector2i _offset;
 public:
-	Field(sf::Vector2u position = sf::Vector2u(0, 0), float scale = 1, State state = State::EMPTY) : _position(position), _scale(scale), _state(state) {
+	Field(sf::Vector2u position = sf::Vector2u(0, 0), float scale = 1, State state = State::EMPTY, sf::Vector2i offset = sf::Vector2i(0, 0)) : _position(position), _scale(scale), _state(state), _offset(offset) {
 		_rect = sf::RectangleShape(sf::Vector2f(scale, scale));
 		_rect.setPosition(sf::Vector2f(_scale * _position.x, _scale * _position.y));
 		sf::Color color;
@@ -38,10 +39,11 @@ public:
 		_rect.setFillColor(color);
 	}
 
-	void setScale(float scale) {
+	void setScale(float scale, sf::Vector2i offset) {
 		_scale = scale;
+		_offset = offset;
 		_rect.setSize(sf::Vector2f(_scale, _scale));
-		_rect.setPosition(sf::Vector2f(_scale * _position.x, _scale * _position.y));
+		_rect.setPosition(sf::Vector2f(_scale * _position.x + _offset.x, _scale * _position.y + _offset.y));
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {

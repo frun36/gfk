@@ -26,6 +26,7 @@ private:
 	std::vector<Chest> _chests;
 	Player _player;
 	float _scale = 1.;
+	sf::Vector2i _offset;
 
 	sf::Vector2i getMotionFromDirection(Direction direction) {
 		switch (direction) {
@@ -59,7 +60,7 @@ private:
 		return _map[position.y][position.x].isOccupyable() && !isChestAtPosition(sf::Vector2u(position.x, position.y));
 	}
 public:
-	Sokoban(std::string filename) : _moveCounter(Counter()) {
+	Sokoban(std::string filename) : _moveCounter(Counter()), _offset(sf::Vector2i(100, 50)) {
 		std::ifstream file(filename);
 
 		if (!file.is_open()) {
@@ -114,18 +115,22 @@ public:
 
 	void setScale(sf::Vector2u size) {
 		_scale = std::fmin(static_cast<float>(size.x) / _x, static_cast<float>(size.y) / _y);
+
+		_offset.x = static_cast<int>(size.x * 0.5f - _scale * _x * 0.5f);
+		_offset.y = static_cast<int>(size.y * 0.5f - _scale * _y * 0.5f);
+
 		for (auto& chest : _chests) {
-			chest.setScale(_scale);
+			chest.setScale(_scale, _offset);
 		}
 
 		for (auto& row : _map) {
 			for (auto& field : row) {
-				field.setScale(_scale);
+				field.setScale(_scale, _offset);
 			}
 		}
 
-		_player.setScale(_scale);
-		_moveCounter.setScale(_scale);
+		_player.setScale(_scale, _offset);
+		_moveCounter.setScale(_scale, _offset);
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
