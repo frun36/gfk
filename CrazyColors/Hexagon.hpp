@@ -14,20 +14,27 @@ protected:
 	std::array<sf::Text, 3> _labels;
 	sf::ConvexShape _polygon;
 	sf::RectangleShape _border;
+	bool getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector3f& result) const;
 public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
 	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::array<std::string, 3> labels);
 
 	void drawBorders(sf::RenderTarget& target) const;
+
+	virtual void fill(sf::RenderTarget& target) const = 0;
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		drawBorders(target);
+		fill(target);
+	}
 };
 
 class RGB : public Hexagon {
 public:
-	RGB(sf::Vector2f topLeft, sf::Vector2f bottomRight) : Hexagon(topLeft, bottomRight, "RGB", {"R", "G", "B"}) {}
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		drawBorders(target);
-	}
+	RGB(sf::Vector2f topLeft, sf::Vector2f bottomRight) : Hexagon(topLeft, bottomRight, "RGB", { "R", "G", "B" }) {}
+
+	void fill(sf::RenderTarget& target) const override {}
 };
 
 #endif
