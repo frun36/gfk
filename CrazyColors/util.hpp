@@ -11,4 +11,8 @@ inline float dotProduct(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
+inline float detFromColumns(const sf::Vector2f& c1, const sf::Vector2f& c2) {
+	return c1.x * c2.y - c2.x * c1.y;
+}
+
 #endif

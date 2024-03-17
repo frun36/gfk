@@ -13,7 +13,7 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 		angleRad = 2.f * 3.14159f * i / 6.f + 3.14159f * 0.5f;
 		_polygon.setPoint(i, sf::Vector2f(
 			_center.x + cos(angleRad) * radius,
-			_center.y + sin(angleRad) * radius
+			_center.y - sin(angleRad) * radius
 		));
 	}
 
@@ -74,27 +74,31 @@ void Hexagon::drawBorders(sf::RenderTarget& target) const {
 	}
 
 	sf::Vector3f res;
-	for (size_t i = 0; i < 6; i++) {
-		if(getCoordinatesWithinRhombus(i, _center, res))
-			std::cout << i << ": " << res.x << " " << res.y << " " << res.z << "\n";
-	}
+	//for (size_t i = 0; i < 6; i++) {
+	//	if(getCoordinatesWithinRhombus(i, _center, res))
+	//		std::cout << i << ": " << res.x << " " << res.y << " " << res.z << "\n";
+	//}
 
 	sf::CircleShape c1;
 	c1.setRadius(10);
 
-	for (size_t i = 0; i < 320; i++) {
-		c1.setPosition(_center + sf::Vector2f(-1. * i + 160, -1. * i + 160));
-		size_t j = 1;
-		while (!getCoordinatesWithinRhombus(j, c1.getPosition(), res)) { j += 2; }
-		std::cout << res.x << " " << res.y << " " << res.z << "\n";
-		c1.setFillColor(sf::Color(res.x * 255, res.y * 255, res.z * 255));
-		target.draw(c1);
+	for (size_t i = 0; i < 64; i++) {
+		for (size_t j = 0; j < 128; j++) {
+			c1.setPosition(_polygon.getPoint(0) + sf::Vector2f(200 - sqrt(3) * 2. * j, 20. * i));
+			/*size_t j = 1;
+			while (!getCoordinatesWithinRhombus(j, c1.getPosition(), res)) { j += 2; }*/
+			//getCoordinatesWithinRhombus(0, c1.getPosition(), res);
+			//std::cout << res.x << " " << res.y << " " << res.z << "\n";
+			res = getHexCoordinates(c1.getPosition());
+			c1.setFillColor(sf::Color(res.x * 255, res.y * 255, res.z * 255));
+			target.draw(c1);
+		}
+		
 	}
 
 }
 
-// Not sure if it works
-bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector3f& result) const {
+bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const {
 	sf::Vector2f originPoint = _polygon.getPoint(rhombusOriginPoint);
 	sf::Vector2f rightPoint = _polygon.getPoint((rhombusOriginPoint + 1) % 6);
 	sf::Vector2f leftPoint = _polygon.getPoint((rhombusOriginPoint + 5) % 6);
@@ -105,26 +109,27 @@ bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::V
 
 	float sideLength = length(rightArm);
 
-	sf::Vector2f lprojection = (dotProduct(leftArm, pointArm) / (sideLength * sideLength)) * leftArm;
-	float llen = length(lprojection) + length(pointArm - lprojection) * 0.57735f;
-	if (dotProduct(lprojection, leftArm) < 0)
-	//	//llen = length(lprojection) - length(pointArm - lprojection) * 0.57735f;
-	//	llen = abs(length(lprojection) - length(pointArm - lprojection) * 0.57735f);
-		llen = 0;
+	float det = detFromColumns(leftArm, rightArm);
 
-	sf::Vector2f rprojection = (dotProduct(rightArm, pointArm) / (sideLength * sideLength)) * rightArm;
-	float rlen = length(rprojection) + length(pointArm - rprojection) * 0.57735f;
-	if (dotProduct(rprojection, rightArm) < 0)
-	//	//rlen = length(rprojection) - length(pointArm - rprojection) * 0.57735f;
-	//	rlen = abs(length(rprojection) - length(pointArm - rprojection) * 0.57735f);
-		rlen = 0;
-
-
-	result = sf::Vector3f(
-		llen / sideLength,
-		rlen / sideLength,
-		1 - length(p - _center) / sideLength
+	result = sf::Vector2f(
+		detFromColumns(pointArm, rightArm) / det,
+		detFromColumns(leftArm, pointArm) / det
 	);
 
-	return !((result.x > 1.f) || (result.y > 1.f));
+	return (result.x <= 1.f) && (result.y <= 1.f) && (result.x >= 0) && (result.y >= 0);
+}
+
+sf::Vector3f Hexagon::getHexCoordinates(const sf::Vector2f& p) const
+{
+	sf::Vector2f result;
+	if (getCoordinatesWithinRhombus(0, p, result)) {
+		return sf::Vector3f(1, result.y, result.x);
+	}
+	if (getCoordinatesWithinRhombus(2, p, result)) {
+		return sf::Vector3f(result.x, 1, result.y);
+	} 
+	if (getCoordinatesWithinRhombus(4, p, result)) {
+		return sf::Vector3f(result.y, result.x, 1);
+	}
+	return sf::Vector3f();
 }

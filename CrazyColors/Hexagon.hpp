@@ -14,7 +14,8 @@ protected:
 	std::array<sf::Text, 3> _labels;
 	sf::ConvexShape _polygon;
 	sf::RectangleShape _border;
-	bool getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector3f& result) const;
+	bool getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const;
+	sf::Vector3f getHexCoordinates(const sf::Vector2f& p) const;
 public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
