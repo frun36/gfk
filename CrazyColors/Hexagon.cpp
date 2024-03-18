@@ -30,17 +30,17 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 
 	_labels[0].setPosition(sf::Vector2f(
 		_center.x - 8.f,
-		_center.y - radius * 1.2f
+		_center.y - (radius + 48)
 	));
 
 	_labels[1].setPosition(sf::Vector2f(
-		_center.x - radius * 1.1f * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
-		_center.y + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.25f
+		_center.x - (radius + 24)  * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
+		_center.y + (radius + 24) * static_cast<float>(sqrt(3)) * 0.25f
 	));
 
 	_labels[2].setPosition(sf::Vector2f(
-		_center.x + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
-		_center.y + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.25f
+		_center.x + (radius + 24) * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
+		_center.y + (radius + 24) * static_cast<float>(sqrt(3)) * 0.25f
 	));
 
 	generateTexture();
