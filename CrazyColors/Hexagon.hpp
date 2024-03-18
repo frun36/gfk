@@ -10,7 +10,7 @@
 extern sf::Font font;
 
 class Hexagon : public sf::Drawable {
-protected: 
+protected:
 	sf::Vector2f _topLeft, _bottomRight, _center;
 	sf::Text _title;
 	std::array<sf::Text, 3> _labels;
@@ -26,7 +26,11 @@ protected:
 public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
-	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates);
+	Hexagon(std::string title,
+		std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates,
+		sf::Vector2f topLeft = sf::Vector2f(),
+		sf::Vector2f bottomRight = sf::Vector2f()
+	);
 
 	void generateTexture();
 
