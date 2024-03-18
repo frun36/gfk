@@ -6,6 +6,7 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 	_bottomRight = bottomRight;
 	_center = (_topLeft + _bottomRight) * 0.5f;
 
+	// Generate hexagon
 	float radius = (_center.y - _topLeft.y) * 0.75f;
 	float angleRad;
 
@@ -17,48 +18,54 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 		));
 	}
 
+	// Square border
 	_border.setPosition(topLeft);
 	_border.setSize(bottomRight - topLeft);
 
-	_title.setCharacterSize(32);
+	// Texture sprite
+	_sprite.setPosition(topLeft);
+
+	// Text
 	_title.setPosition(topLeft + sf::Vector2f(8, 0));
 
-	_labels[0].setCharacterSize(32);
 	_labels[0].setPosition(sf::Vector2f(
 		_center.x - 8.f,
 		_center.y - radius * 1.2f
 	));
 
-	_labels[1].setCharacterSize(32);
 	_labels[1].setPosition(sf::Vector2f(
 		_center.x - radius * 1.1f * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
 		_center.y + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.25f
 	));
 
-	_labels[2].setCharacterSize(32);
 	_labels[2].setPosition(sf::Vector2f(
 		_center.x + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
 		_center.y + radius * 1.1f * static_cast<float>(sqrt(3)) * 0.25f
 	));
+
+	generateTexture();
 }
 
-Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::array<std::string, 3> labels) : _polygon(6), _border(topLeft - bottomRight), _title() {
+Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::array<std::string, 3> labels)
+	: _sprite(_texture), _polygon(6), _border(topLeft - bottomRight), _title() {
 	resize(topLeft, bottomRight);
 
 	_polygon.setFillColor(sf::Color::Transparent);
-	_polygon.setOutlineColor(sf::Color::White);
+	_polygon.setOutlineColor(sf::Color(220, 220, 220));
 	_polygon.setOutlineThickness(3.f);
 
-	_border.setFillColor(sf::Color(16, 16, 16));
+	_border.setFillColor(sf::Color::Transparent);
 	_border.setOutlineColor(sf::Color(64, 64, 64));
 	_border.setOutlineThickness(1.f);
 
 	_title.setFont(font);
+	_title.setCharacterSize(32);
 	_title.setString(title);
 	_title.setFillColor(sf::Color(220, 220, 220));
 
 	for (size_t i = 0; i < 3; i++) {
 		_labels[i].setFont(font);
+		_labels[i].setCharacterSize(32);
 		_labels[i].setString(labels[i]);
 		_labels[i].setFillColor(sf::Color(220, 220, 220));
 	}
@@ -72,30 +79,43 @@ void Hexagon::drawBorders(sf::RenderTarget& target) const {
 	for (auto l : _labels) {
 		target.draw(l);
 	}
+}
 
-	sf::Vector3f res;
-	//for (size_t i = 0; i < 6; i++) {
-	//	if(getCoordinatesWithinRhombus(i, _center, res))
-	//		std::cout << i << ": " << res.x << " " << res.y << " " << res.z << "\n";
-	//}
+void Hexagon::generateTexture() {
+	size_t width = static_cast<size_t>((_bottomRight - _topLeft).x);
+	size_t height = static_cast<size_t>((_bottomRight - _topLeft).y);
 
-	sf::CircleShape c1;
-	c1.setRadius(10);
+	std::vector<sf::Uint8> pixelData(4 * width * height);
 
-	for (size_t i = 0; i < 64; i++) {
-		for (size_t j = 0; j < 128; j++) {
-			c1.setPosition(_polygon.getPoint(0) + sf::Vector2f(200 - sqrt(3) * 2. * j, 20. * i));
-			/*size_t j = 1;
-			while (!getCoordinatesWithinRhombus(j, c1.getPosition(), res)) { j += 2; }*/
-			//getCoordinatesWithinRhombus(0, c1.getPosition(), res);
-			//std::cout << res.x << " " << res.y << " " << res.z << "\n";
-			res = getHexCoordinates(c1.getPosition());
-			c1.setFillColor(sf::Color(res.x * 255, res.y * 255, res.z * 255));
-			target.draw(c1);
+	size_t currIndex = 0;
+	sf::Vector2f currPoint;
+	sf::Color currColor = sf::Color::Red;
+
+	for (size_t i = _topLeft.y; i < _bottomRight.y; i++) {
+		for (size_t j = _topLeft.x; j < _bottomRight.x; j++) {
+			currPoint.y = static_cast<float>(i);
+			currPoint.x = static_cast<float>(j);
+			currColor = getColorFromHexCoordinates(
+				getHexCoordinates(currPoint)
+			);
+
+			pixelData[currIndex] = currColor.r;
+			pixelData[currIndex + 1] = currColor.g;
+			pixelData[currIndex + 2] = currColor.b;
+			pixelData[currIndex + 3] = currColor.a;
+
+			currIndex += 4;
 		}
-		
 	}
 
+
+	sf::Image image;
+	image.create(width, height, pixelData.data());
+
+	_texture.create(width, height);
+	_texture.update(image);
+
+	_sprite.setTexture(_texture, true);
 }
 
 bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const {
@@ -127,9 +147,9 @@ sf::Vector3f Hexagon::getHexCoordinates(const sf::Vector2f& p) const
 	}
 	if (getCoordinatesWithinRhombus(2, p, result)) {
 		return sf::Vector3f(result.x, 1, result.y);
-	} 
+	}
 	if (getCoordinatesWithinRhombus(4, p, result)) {
 		return sf::Vector3f(result.y, result.x, 1);
 	}
-	return sf::Vector3f();
+	return sf::Vector3f(0.f, 0.f, 0.f);
 }
