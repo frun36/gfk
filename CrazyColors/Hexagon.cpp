@@ -82,8 +82,8 @@ void Hexagon::generateTexture() {
 	sf::Vector2f currPoint;
 	sf::Color currColor = sf::Color::Red;
 
-	for (size_t i = static_cast<size_t>(_topLeft.y); i < static_cast<size_t>(_bottomRight.y); i++) {
-		for (size_t j = static_cast<size_t>(_topLeft.x); j < static_cast<size_t>(_bottomRight.x); j++) {
+	for (size_t i = static_cast<size_t>(_topLeft.y); i < static_cast<size_t>(_topLeft.y) + height; i++) {
+		for (size_t j = static_cast<size_t>(_topLeft.x); j < static_cast<size_t>(_topLeft.x) + width; j++) {
 			currPoint.y = static_cast<float>(i);
 			currPoint.x = static_cast<float>(j);
 			currColor = _getColorFromHexCoordinates(

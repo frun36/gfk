@@ -13,12 +13,7 @@ int main(void) {
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
 	Hexagon rgb("RGB", [](std::optional<sf::Vector3f> v) {
-		if (v.has_value()) {
-			return sf::Color(255 * v.value().x, 255 * v.value().y, 255 * v.value().z);
-		}
-		else {
-			return sf::Color::Transparent;
-		}
+		return v.has_value() ? sf::Color(255 * v.value().x, 255 * v.value().y, 255 * v.value().z) : sf::Color::Transparent;
 		});
 
 	Hexagon cmy("CMY", [](std::optional<sf::Vector3f> v) {
@@ -30,12 +25,7 @@ int main(void) {
 		});
 
 	Hexagon hsv("HSV", [](std::optional<sf::Vector3f> v) {
-		if (v.has_value()) {
-			return sf::Color(255 * v.value().x, 255 * v.value().y, 255 * v.value().z);
-		}
-		else {
-			return sf::Color::Transparent;
-		}
+		return v.has_value() ? sf::Color(255 * v.value().x, 255 * v.value().y, 255 * v.value().z) : sf::Color::Transparent;
 		});
 
 	Grid grid({ rgb, cmy, hsl, hsv }, 10.f, 10.f);
