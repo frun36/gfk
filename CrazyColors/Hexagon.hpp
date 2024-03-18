@@ -28,14 +28,9 @@ public:
 
 	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates);
 
-	void drawBorders(sf::RenderTarget& target) const;
-
 	void generateTexture();
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		target.draw(_sprite);
-		drawBorders(target);
-	}
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 #endif

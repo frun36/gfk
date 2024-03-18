@@ -52,9 +52,9 @@ Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string tit
 
 	_polygon.setFillColor(sf::Color::Transparent);
 	_polygon.setOutlineColor(sf::Color(220, 220, 220));
-	_polygon.setOutlineThickness(3.f);
+	_polygon.setOutlineThickness(4.f);
 
-	_border.setFillColor(sf::Color::Transparent);
+	_border.setFillColor(sf::Color(16, 16, 16));
 	_border.setOutlineColor(sf::Color(64, 64, 64));
 	_border.setOutlineThickness(1.f);
 
@@ -68,16 +68,6 @@ Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string tit
 		_labels[i].setCharacterSize(32);
 		_labels[i].setString(_title.getString()[i]);
 		_labels[i].setFillColor(sf::Color(220, 220, 220));
-	}
-}
-
-void Hexagon::drawBorders(sf::RenderTarget& target) const {
-	target.draw(_border);
-	target.draw(_polygon);
-	target.draw(_title);
-
-	for (auto l : _labels) {
-		target.draw(l);
 	}
 }
 
@@ -118,6 +108,19 @@ void Hexagon::generateTexture() {
 	_sprite.setTexture(_texture, true);
 }
 
+void Hexagon::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	target.draw(_border);
+	target.draw(_title);
+
+	for (auto l : _labels) {
+		target.draw(l);
+	}
+
+	target.draw(_sprite);
+
+	target.draw(_polygon);
+}
+
 bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const {
 	sf::Vector2f originPoint = _polygon.getPoint(rhombusOriginPoint);
 	sf::Vector2f rightPoint = _polygon.getPoint((rhombusOriginPoint + 1) % 6);
@@ -136,7 +139,7 @@ bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::V
 		detFromColumns(leftArm, pointArm) / det
 	);
 
-	return (result.x <= 1.f) && (result.y <= 1.f) && (result.x >= 0) && (result.y >= 0);
+	return (result.x <= 1.00001f) && (result.y <= 1.00001f) && (result.x >= -0.00001) && (result.y >= -0.00001);
 }
 
 std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) const
