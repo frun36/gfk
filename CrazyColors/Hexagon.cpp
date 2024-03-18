@@ -46,7 +46,7 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 	generateTexture();
 }
 
-Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::array<std::string, 3> labels)
+Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title)
 	: _sprite(_texture), _polygon(6), _border(topLeft - bottomRight), _title() {
 	resize(topLeft, bottomRight);
 
@@ -66,7 +66,7 @@ Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string tit
 	for (size_t i = 0; i < 3; i++) {
 		_labels[i].setFont(font);
 		_labels[i].setCharacterSize(32);
-		_labels[i].setString(labels[i]);
+		_labels[i].setString(_title.getString()[i]);
 		_labels[i].setFillColor(sf::Color(220, 220, 220));
 	}
 }

@@ -23,7 +23,7 @@ protected:
 public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
-	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::array<std::string, 3> labels);
+	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title);
 
 	void drawBorders(sf::RenderTarget& target) const;
 
@@ -41,7 +41,7 @@ public:
 
 class RGB : public Hexagon {
 public:
-	RGB(sf::Vector2f topLeft, sf::Vector2f bottomRight) : Hexagon(topLeft, bottomRight, "RGB", { "R", "G", "B" }) {}
+	RGB(sf::Vector2f topLeft, sf::Vector2f bottomRight) : Hexagon(topLeft, bottomRight, "RGB") {}
 
 	sf::Color getColorFromHexCoordinates(sf::Vector3f coordinates) const override {
 		return sf::Color(255, 255, 0.);
