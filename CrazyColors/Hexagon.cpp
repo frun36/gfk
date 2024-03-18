@@ -46,8 +46,8 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 	generateTexture();
 }
 
-Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title)
-	: _sprite(_texture), _polygon(6), _border(topLeft - bottomRight), _title() {
+Hexagon::Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates)
+	: _sprite(_texture), _polygon(6), _border(topLeft - bottomRight), _title(), _getColorFromHexCoordinates(getColorFromHexCoordinates) {
 	resize(topLeft, bottomRight);
 
 	_polygon.setFillColor(sf::Color::Transparent);
@@ -95,7 +95,7 @@ void Hexagon::generateTexture() {
 		for (size_t j = _topLeft.x; j < _bottomRight.x; j++) {
 			currPoint.y = static_cast<float>(i);
 			currPoint.x = static_cast<float>(j);
-			currColor = getColorFromHexCoordinates(
+			currColor = _getColorFromHexCoordinates(
 				getHexCoordinates(currPoint)
 			);
 
@@ -139,17 +139,17 @@ bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::V
 	return (result.x <= 1.f) && (result.y <= 1.f) && (result.x >= 0) && (result.y >= 0);
 }
 
-sf::Vector3f Hexagon::getHexCoordinates(const sf::Vector2f& p) const
+std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) const
 {
 	sf::Vector2f result;
 	if (getCoordinatesWithinRhombus(0, p, result)) {
-		return sf::Vector3f(1, result.y, result.x);
+		return std::optional(sf::Vector3f(1, result.y, result.x));
 	}
 	if (getCoordinatesWithinRhombus(2, p, result)) {
-		return sf::Vector3f(result.x, 1, result.y);
+		return std::optional(sf::Vector3f(result.x, 1, result.y));
 	}
 	if (getCoordinatesWithinRhombus(4, p, result)) {
-		return sf::Vector3f(result.y, result.x, 1);
+		return std::optional(sf::Vector3f(result.y, result.x, 1));
 	}
-	return sf::Vector3f(0.f, 0.f, 0.f);
+	return std::optional<sf::Vector3f>();
 }

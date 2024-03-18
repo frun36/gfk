@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <array>
+#include <functional>
+#include <optional>
 
 extern sf::Font font;
 
@@ -16,35 +18,23 @@ protected:
 	sf::RectangleShape _border;
 	sf::Texture _texture;
 	sf::Sprite _sprite;
+	std::function<sf::Color(std::optional<sf::Vector3f>)> _getColorFromHexCoordinates;
 
 
 	bool getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const;
-	sf::Vector3f getHexCoordinates(const sf::Vector2f& p) const;
+	std::optional<sf::Vector3f> getHexCoordinates(const sf::Vector2f& p) const;
 public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
-	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title);
+	Hexagon(sf::Vector2f topLeft, sf::Vector2f bottomRight, std::string title, std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates);
 
 	void drawBorders(sf::RenderTarget& target) const;
-
-	virtual sf::Color getColorFromHexCoordinates(sf::Vector3f coordinates) const {
-		return sf::Color(coordinates.x * 255., coordinates.y * 255., coordinates.z * 255.);
-	}
 
 	void generateTexture();
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		target.draw(_sprite);
 		drawBorders(target);
-	}
-};
-
-class RGB : public Hexagon {
-public:
-	RGB(sf::Vector2f topLeft, sf::Vector2f bottomRight) : Hexagon(topLeft, bottomRight, "RGB") {}
-
-	sf::Color getColorFromHexCoordinates(sf::Vector3f coordinates) const override {
-		return sf::Color(255, 255, 0.);
 	}
 };
 
