@@ -6,6 +6,7 @@
 #include <array>
 #include <functional>
 #include <optional>
+#include "conversions.hpp"
 
 extern sf::Font font;
 
@@ -18,8 +19,11 @@ protected:
 	sf::RectangleShape _border;
 	sf::Texture _texture;
 	sf::Sprite _sprite;
-	std::function<sf::Color(std::optional<sf::Vector3f>)> _getColorFromHexCoordinates;
+	std::function<sf::Color(sf::Vector3f)> _convertColor;
 
+	sf::Color getColorFromHexCoordinates(std::optional<sf::Vector3f> vec) {
+		return vec.has_value() ? _convertColor(vec.value()) : sf::Color::Transparent;
+	}
 
 	bool getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const;
 	std::optional<sf::Vector3f> getHexCoordinates(const sf::Vector2f& p) const;
@@ -27,7 +31,7 @@ public:
 	void resize(sf::Vector2f topLeft, sf::Vector2f bottomRight);
 
 	Hexagon(std::string title,
-		std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates,
+		std::function<sf::Color(sf::Vector3f)> convertColor,
 		sf::Vector2f topLeft = sf::Vector2f(),
 		sf::Vector2f bottomRight = sf::Vector2f()
 	);

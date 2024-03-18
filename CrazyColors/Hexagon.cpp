@@ -47,10 +47,10 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 }
 
 Hexagon::Hexagon(std::string title,
-	std::function<sf::Color(std::optional<sf::Vector3f>)> getColorFromHexCoordinates,
+	std::function<sf::Color(sf::Vector3f)> convertColor,
 	sf::Vector2f topLeft,
 	sf::Vector2f bottomRight
-) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(topLeft - bottomRight), _title(), _getColorFromHexCoordinates(getColorFromHexCoordinates) {
+) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(topLeft - bottomRight), _title(), _convertColor(convertColor) {
 	_polygon.setFillColor(sf::Color::Transparent);
 	_polygon.setOutlineColor(sf::Color(220, 220, 220));
 	_polygon.setOutlineThickness(4.f);
@@ -86,7 +86,7 @@ void Hexagon::generateTexture() {
 		for (size_t j = static_cast<size_t>(_topLeft.x); j < static_cast<size_t>(_topLeft.x) + width; j++) {
 			currPoint.y = static_cast<float>(i);
 			currPoint.x = static_cast<float>(j);
-			currColor = _getColorFromHexCoordinates(
+			currColor = getColorFromHexCoordinates(
 				getHexCoordinates(currPoint)
 			);
 
@@ -98,7 +98,6 @@ void Hexagon::generateTexture() {
 			currIndex += 4;
 		}
 	}
-
 
 	sf::Image image;
 	image.create(width, height, pixelData.data());

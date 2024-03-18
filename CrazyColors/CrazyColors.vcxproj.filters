@@ -35,5 +35,8 @@
     <ClInclude Include="Grid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="conversions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

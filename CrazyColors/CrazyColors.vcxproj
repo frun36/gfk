@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="conversions.hpp" />
     <ClInclude Include="Grid.hpp" />
     <ClInclude Include="Hexagon.hpp" />
     <ClInclude Include="util.hpp" />

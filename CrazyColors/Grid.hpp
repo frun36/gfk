@@ -16,7 +16,7 @@ private:
 	void updateTileSize() {
 		float l = fminf(_bottomRight.x - _topLeft.x, _bottomRight.y - _topLeft.y);
 
-		_tileSize = 0.5 * (l - 2 * _margin - 4 * _padding);
+		_tileSize = 0.5f * (l - 2 * _margin - 4 * _padding);
 	}
 public:
 	Grid(std::array<Hexagon, 4> tiles, float padding = 0.f, float margin = 0.f, sf::Vector2f topLeft = sf::Vector2f(), sf::Vector2f bottomRight = sf::Vector2f())
@@ -25,7 +25,7 @@ public:
 	}
 
 	void resize(unsigned width, unsigned height) {
-		_bottomRight = _topLeft + sf::Vector2f(width, height);
+		_bottomRight = _topLeft + sf::Vector2f(static_cast<float>(width), static_cast<float>(height));
 
 		updateTileSize();
 
