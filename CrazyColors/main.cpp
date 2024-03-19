@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Hexagon.hpp"
 #include "Grid.hpp"
+#include "Slider.hpp"
 
 sf::Font font;
 
@@ -12,11 +13,13 @@ int main(void) {
 
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
+	Slider slider;
+
 	Grid grid({
-		Hexagon("RGB", &Conversions::fromRGB),
-		Hexagon("CMY", &Conversions::fromCMY),
-		Hexagon("HSL", &Conversions::fromHSL),
-		Hexagon("HSV", &Conversions::fromHSV)
+		Hexagon("RGB", &Conversions::fromRGB, [&slider](auto v) { return v * slider.getValue(); }),
+		Hexagon("CMY", &Conversions::fromCMY, [&slider](auto v) { return v * slider.getValue(); }),
+		Hexagon("HSL", &Conversions::fromHSL, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); }),
+		Hexagon("HSV", &Conversions::fromHSV, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); })
 		}, 10.f, 10.f);
 
 	grid.resize(window.getSize().x, window.getSize().y);
@@ -36,6 +39,19 @@ int main(void) {
 					static_cast<float>(event.size.height)
 				)));
 				grid.resize(event.size.width, event.size.height);
+				break;
+			case sf::Event::KeyPressed:
+				switch (event.key.code) {
+				case sf::Keyboard::Down:
+				case sf::Keyboard::Left:
+					slider -= 0.1f;
+					break;
+				case sf::Keyboard::Right:
+				case sf::Keyboard::Up:
+					slider += 0.1f;
+					break;
+				}
+				grid.regenerateTextures();
 				break;
 			}
 		}

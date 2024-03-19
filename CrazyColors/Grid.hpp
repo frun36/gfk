@@ -44,6 +44,12 @@ public:
 		_tiles[3].resize(currTopLeft, currTopLeft + sf::Vector2f(_tileSize, _tileSize));
 	}
 
+	void regenerateTextures() {
+		for (auto& tile : _tiles) {
+			tile.generateTexture();
+		}
+	}
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		for (auto& tile : _tiles) {
 			target.draw(tile);

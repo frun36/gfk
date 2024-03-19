@@ -48,9 +48,10 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 
 Hexagon::Hexagon(std::string title,
 	std::function<sf::Color(sf::Vector3f)> convertColor,
+	std::function<sf::Vector3f(sf::Vector3f)> modifyColor,
 	sf::Vector2f topLeft,
 	sf::Vector2f bottomRight
-) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(topLeft - bottomRight), _title(), _convertColor(convertColor) {
+) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(topLeft - bottomRight), _title(), _convertColor(convertColor), _modifyColor(modifyColor) {
 	_polygon.setFillColor(sf::Color::Transparent);
 	_polygon.setOutlineColor(sf::Color(220, 220, 220));
 	_polygon.setOutlineThickness(4.f);
@@ -146,13 +147,13 @@ std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) co
 {
 	sf::Vector2f result;
 	if (getCoordinatesWithinRhombus(0, p, result)) {
-		return std::optional(sf::Vector3f(1, result.y, result.x));
+		return std::optional(_modifyColor(sf::Vector3f(1, result.y, result.x)));
 	}
 	if (getCoordinatesWithinRhombus(2, p, result)) {
-		return std::optional(sf::Vector3f(result.x, 1, result.y));
+		return std::optional(_modifyColor(sf::Vector3f(result.x, 1, result.y)));
 	}
 	if (getCoordinatesWithinRhombus(4, p, result)) {
-		return std::optional(sf::Vector3f(result.y, result.x, 1));
+		return std::optional(_modifyColor(sf::Vector3f(result.y, result.x, 1)));
 	}
 	return std::optional<sf::Vector3f>();
 }

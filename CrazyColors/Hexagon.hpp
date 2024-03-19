@@ -20,6 +20,7 @@ protected:
 	sf::Texture _texture;
 	sf::Sprite _sprite;
 	std::function<sf::Color(sf::Vector3f)> _convertColor;
+	std::function<sf::Vector3f(sf::Vector3f)> _modifyColor;
 
 	sf::Color getColorFromHexCoordinates(std::optional<sf::Vector3f> vec) {
 		return vec.has_value() ? _convertColor(vec.value()) : sf::Color::Transparent;
@@ -32,6 +33,7 @@ public:
 
 	Hexagon(std::string title,
 		std::function<sf::Color(sf::Vector3f)> convertColor,
+		std::function<sf::Vector3f(sf::Vector3f)> modifyColor,
 		sf::Vector2f topLeft = sf::Vector2f(),
 		sf::Vector2f bottomRight = sf::Vector2f()
 	);

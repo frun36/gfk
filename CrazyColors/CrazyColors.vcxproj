@@ -141,6 +141,7 @@
     <ClInclude Include="conversions.hpp" />
     <ClInclude Include="Grid.hpp" />
     <ClInclude Include="Hexagon.hpp" />
+    <ClInclude Include="Slider.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
