@@ -41,5 +41,8 @@
     <ClInclude Include="Slider.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ControlPanel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

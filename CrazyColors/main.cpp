@@ -2,6 +2,8 @@
 #include "Hexagon.hpp"
 #include "Grid.hpp"
 #include "Slider.hpp"
+#include <vector>
+#include <numeric>
 
 sf::Font font;
 
@@ -11,20 +13,32 @@ int main(void) {
 		return 1;
 	}
 
-	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(1280, 860), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
 	Slider slider;
+	ControlPanel controlPanel(slider);
 
 	Grid grid({
 		Hexagon("RGB", &Conversions::fromRGB, [&slider](auto v) { return v * slider.getValue(); }),
 		Hexagon("CMY", &Conversions::fromCMY, [&slider](auto v) { return v * slider.getValue(); }),
 		Hexagon("HSL", &Conversions::fromHSL, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); }),
 		Hexagon("HSV", &Conversions::fromHSV, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); })
-		}, 10.f, 10.f);
+		},
+		controlPanel,
+		10.f,
+		10.f
+	);
+
+	sf::Clock frameClock, aroundHalfSecondClock;
+	std::vector<sf::Int64> frameTimes;
+
+	aroundHalfSecondClock.restart();
 
 	grid.resize(window.getSize().x, window.getSize().y);
 
 	while (window.isOpen()) {
+		frameClock.restart();
+
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -54,6 +68,13 @@ int main(void) {
 				grid.regenerateTextures();
 				break;
 			}
+		}
+
+		frameTimes.push_back(frameClock.restart().asMicroseconds());
+		if (aroundHalfSecondClock.getElapsedTime().asSeconds() >= 0.5f && frameTimes.size() >= 1) {
+			controlPanel.setTimer(std::reduce(frameTimes.begin(), frameTimes.end()) / frameTimes.size());
+			frameTimes.clear();
+			aroundHalfSecondClock.restart();
 		}
 
 		window.clear(sf::Color(32, 32, 32));

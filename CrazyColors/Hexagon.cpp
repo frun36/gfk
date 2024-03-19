@@ -51,7 +51,7 @@ Hexagon::Hexagon(std::string title,
 	std::function<sf::Vector3f(sf::Vector3f)> modifyColor,
 	sf::Vector2f topLeft,
 	sf::Vector2f bottomRight
-) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(topLeft - bottomRight), _title(), _convertColor(convertColor), _modifyColor(modifyColor) {
+) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(bottomRight - topLeft), _convertColor(convertColor), _modifyColor(modifyColor) {
 	_polygon.setFillColor(sf::Color::Transparent);
 	_polygon.setOutlineColor(sf::Color(220, 220, 220));
 	_polygon.setOutlineThickness(4.f);
