@@ -12,15 +12,12 @@ int main(void) {
 
 	sf::RenderWindow window(sf::VideoMode(1000, 1000), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
-	Hexagon rgb("RGB", [](auto v) { return Conversions::fromRGB(v); });
-
-	Hexagon cmy("CMY", [](auto v) { return Conversions::fromCMY(v); });
-
-	Hexagon hsl("HSL", [](auto v) { return Conversions::fromHSL(v); });
-
-	Hexagon hsv("HSV", [](auto v) { return Conversions::fromHSV(v); });
-
-	Grid grid({ rgb, cmy, hsl, hsv }, 10.f, 10.f);
+	Grid grid({
+		Hexagon("RGB", &Conversions::fromRGB),
+		Hexagon("CMY", &Conversions::fromCMY),
+		Hexagon("HSL", &Conversions::fromHSL),
+		Hexagon("HSV", &Conversions::fromHSV)
+		}, 10.f, 10.f);
 
 	grid.resize(window.getSize().x, window.getSize().y);
 
