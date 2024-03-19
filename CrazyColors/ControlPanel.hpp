@@ -32,6 +32,9 @@ public:
 		_topLeft = topLeft;
 		_bottomRight = bottomRight;
 
+		_slider.resize(topLeft + sf::Vector2f(0.4f * (bottomRight - topLeft).x, 0.3f * (bottomRight - topLeft).x), 
+			bottomRight - sf::Vector2f(0.4f * (bottomRight - topLeft).x, 0.3f * (bottomRight - topLeft).x));
+
 		_border.setPosition(topLeft);
 		_border.setSize(bottomRight - topLeft);
 
@@ -40,6 +43,7 @@ public:
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		target.draw(_border);
+		target.draw(_slider);
 		target.draw(_timer);
 	}
 

@@ -74,14 +74,14 @@ Hexagon::Hexagon(std::string title,
 }
 
 void Hexagon::generateTexture() {
-	unsigned width = static_cast<size_t>((_bottomRight - _topLeft).x);
-	unsigned height = static_cast<size_t>((_bottomRight - _topLeft).y);
+	unsigned width = static_cast<unsigned>((_bottomRight - _topLeft).x);
+	unsigned height = static_cast<unsigned>((_bottomRight - _topLeft).y);
 
 	std::vector<sf::Uint8> pixelData(4 * width * height);
 
 	size_t currIndex = 0;
 	sf::Vector2f currPoint;
-	sf::Color currColor = sf::Color::Red;
+	sf::Color currColor;
 
 	for (size_t i = static_cast<size_t>(_topLeft.y); i < static_cast<size_t>(_topLeft.y) + height; i++) {
 		for (size_t j = static_cast<size_t>(_topLeft.x); j < static_cast<size_t>(_topLeft.x) + width; j++) {
