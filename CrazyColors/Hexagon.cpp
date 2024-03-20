@@ -133,8 +133,6 @@ bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::V
 	sf::Vector2f leftArm = leftPoint - originPoint;
 	sf::Vector2f pointArm = p - originPoint;
 
-	float sideLength = length(rightArm);
-
 	float det = detFromColumns(leftArm, rightArm);
 
 	result = sf::Vector2f(

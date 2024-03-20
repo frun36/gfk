@@ -80,7 +80,6 @@ bool Slider::handleMouseEvent(sf::Event event) {
 	case sf::Event::MouseButtonPressed:
 		if (event.mouseButton.x >= _topLeft.x && event.mouseButton.x <= _bottomRight.x && event.mouseButton.y >= _topLeft.y && event.mouseButton.y <= _bottomRight.y) {
 			*this = (_bottomRight.y - event.mouseButton.y) / (_bottomRight.y - _topLeft.y);
-			updateKnob();
 			_moving = true;
 			_lastMouseY = event.mouseButton.y;
 			return true;
@@ -96,6 +95,10 @@ bool Slider::handleMouseEvent(sf::Event event) {
 			_lastMouseY = event.mouseMove.y;
 			return true;
 		}		
+		break;
+	case sf::Event::MouseWheelScrolled:
+		*this += event.mouseWheelScroll.delta * 0.1;
+		return true;
 		break;
 	}
 	return false;
