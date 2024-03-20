@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="Hexagon.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Slider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControlPanel.hpp" />

@@ -15,6 +15,8 @@ int main(void) {
 
 	sf::RenderWindow window(sf::VideoMode(1280, 860), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
+	//window.setFramerateLimit(60);
+
 	Slider slider;
 	ControlPanel controlPanel(slider);
 
@@ -67,7 +69,14 @@ int main(void) {
 				}
 				grid.regenerateTextures();
 				break;
+			case sf::Event::MouseButtonPressed:
+			case sf::Event::MouseButtonReleased:
+			case sf::Event::MouseMoved:
+				slider.handleMouseEvent(event);
+				grid.regenerateTextures();
+				break;
 			}
+			
 		}
 
 		frameTimes.push_back(frameClock.restart().asMicroseconds());
