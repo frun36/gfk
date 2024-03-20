@@ -145,17 +145,30 @@ bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::V
 	return (result.x <= 1.00001f) && (result.y <= 1.00001f) && (result.x >= -0.00001) && (result.y >= -0.00001);
 }
 
-std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) const
-{
+std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) const {
+	float d = distance(p, _polygon.getPoint(0));
+	float d2 = distance(p, _polygon.getPoint(2));
+	float d4 = distance(p, _polygon.getPoint(4));
+	size_t closestPoint = 0;
+	if (d2 < d) closestPoint = 2;
+	if (d4 < d2 && d4 < d) closestPoint = 4;
+
 	sf::Vector2f result;
-	if (getCoordinatesWithinRhombus(0, p, result)) {
-		return std::optional(_modifyColor(sf::Vector3f(1, result.y, result.x)));
+	bool control = true;
+	std::optional<sf::Vector3f> returnValue;
+	switch (closestPoint) {
+	case 0:
+		control = control && getCoordinatesWithinRhombus(0, p, result);
+		returnValue = std::optional(_modifyColor(sf::Vector3f(1, result.y, result.x)));
+		break;
+	case 2:
+		control = control && getCoordinatesWithinRhombus(2, p, result);
+		returnValue = std::optional(_modifyColor(sf::Vector3f(result.x, 1, result.y)));
+		break;
+	case 4:
+		control = control && getCoordinatesWithinRhombus(4, p, result); 
+		returnValue = std::optional(_modifyColor(sf::Vector3f(result.y, result.x, 1)));
+		break;
 	}
-	if (getCoordinatesWithinRhombus(2, p, result)) {
-		return std::optional(_modifyColor(sf::Vector3f(result.x, 1, result.y)));
-	}
-	if (getCoordinatesWithinRhombus(4, p, result)) {
-		return std::optional(_modifyColor(sf::Vector3f(result.y, result.x, 1)));
-	}
-	return std::optional<sf::Vector3f>();
+	return control ? returnValue : std::optional<sf::Vector3f>();
 }
