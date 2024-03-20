@@ -21,7 +21,6 @@ public:
 		_timer.setCharacterSize(32);
 		_timer.setString("-");
 		_timer.setFillColor(sf::Color(220, 220, 220));
-		_timer.setPosition(_topLeft);
 
 		_border.setFillColor(sf::Color(16, 16, 16));
 		_border.setOutlineColor(sf::Color(64, 64, 64));
@@ -38,7 +37,7 @@ public:
 		_border.setPosition(topLeft);
 		_border.setSize(bottomRight - topLeft);
 
-		_timer.setPosition(_topLeft);
+		_timer.setPosition(topLeft + sf::Vector2f(8, 0));
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {

@@ -12,7 +12,7 @@ private:
 	sf::RectangleShape _border;
 	sf::RectangleShape _knob;
 	bool _moving = false;
-	float _lastMouseY = 0.f;
+	int _lastMouseY = 0;
 
 public:
 	Slider();
@@ -43,7 +43,7 @@ public:
 		target.draw(_knob);
 	}
 
-	void handleMouseEvent(sf::Event event);
+	bool handleMouseEvent(sf::Event event);
 };
 
 #endif

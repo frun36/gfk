@@ -58,9 +58,9 @@ void Slider::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 
 void Slider::updateKnob() {
 	_knob.setFillColor(sf::Color(
-		static_cast<float>(255 * _value),
-		static_cast<float>(255 * _value),
-		static_cast<float>(255 * _value)
+		static_cast<sf::Uint8>(255 * _value),
+		static_cast<sf::Uint8>(255 * _value),
+		static_cast<sf::Uint8>(255 * _value)
 	));
 
 	_knob.setSize(sf::Vector2f((_bottomRight.x - _topLeft.x) * 1.2f, (_bottomRight.y - _topLeft.y) * 0.025f));
@@ -75,7 +75,7 @@ Slider& Slider::operator=(float value) {
 	return *this;
 }
 
-void Slider::handleMouseEvent(sf::Event event) {
+bool Slider::handleMouseEvent(sf::Event event) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed:
 		if (event.mouseButton.x >= _topLeft.x && event.mouseButton.x <= _bottomRight.x && event.mouseButton.y >= _topLeft.y && event.mouseButton.y <= _bottomRight.y) {
@@ -83,17 +83,21 @@ void Slider::handleMouseEvent(sf::Event event) {
 			updateKnob();
 			_moving = true;
 			_lastMouseY = event.mouseButton.y;
+			return true;
 		}
 		break;
 	case sf::Event::MouseButtonReleased:
 		_moving = false;
+		return true;
 		break;
 	case sf::Event::MouseMoved:
 		if (_moving) {
 			*this += (_lastMouseY - event.mouseMove.y) / (_bottomRight.y - _topLeft.y);
 			_lastMouseY = event.mouseMove.y;
+			return true;
 		}		
 		break;
 	}
+	return false;
 }
 

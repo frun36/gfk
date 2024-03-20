@@ -61,23 +61,26 @@ int main(void) {
 				case sf::Keyboard::Down:
 				case sf::Keyboard::Left:
 					slider -= 0.1f;
+					grid.markModified();
 					break;
 				case sf::Keyboard::Right:
 				case sf::Keyboard::Up:
 					slider += 0.1f;
+					grid.markModified();
 					break;
 				}
-				grid.regenerateTextures();
 				break;
 			case sf::Event::MouseButtonPressed:
 			case sf::Event::MouseButtonReleased:
 			case sf::Event::MouseMoved:
-				slider.handleMouseEvent(event);
-				grid.regenerateTextures();
+				if(slider.handleMouseEvent(event))
+					grid.markModified();
 				break;
 			}
-			
+
 		}
+
+		grid.regenerateTextures();
 
 		frameTimes.push_back(frameClock.restart().asMicroseconds());
 		if (aroundHalfSecondClock.getElapsedTime().asSeconds() >= 0.5f && frameTimes.size() >= 1) {
