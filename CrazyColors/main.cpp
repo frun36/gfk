@@ -22,7 +22,7 @@ int main(void) {
 
 	Grid grid({
 		Hexagon("RGB", &Conversions::fromRGB, [&slider](auto v) { return v * slider.getValue(); }),
-		Hexagon("CMY", &Conversions::fromCMY, [&slider](auto v) { return v * slider.getValue(); }),
+		Hexagon("CMY", &Conversions::fromCMY, [&slider](auto v) { return v * slider.getValue(); }, true),
 		Hexagon("HSL", &Conversions::fromHSL, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); }),
 		Hexagon("HSV", &Conversions::fromHSV, [&slider](auto v) { return sf::Vector3f(v.x, v.y, v.z * slider.getValue()); })
 		},
@@ -76,6 +76,7 @@ int main(void) {
 			case sf::Event::MouseWheelScrolled:
 				if(slider.handleMouseEvent(event))
 					grid.markModified();
+				grid.handleMouseEvent(event);
 				break;
 			}
 

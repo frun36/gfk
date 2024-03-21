@@ -50,6 +50,12 @@ public:
 	void markModified() {
 		_modified = true;
 	}
+
+	void handleMouseEvent(sf::Event event) {
+		for (auto& tile : _tiles) {
+			tile.handleMouseEvent(event);
+		}
+	}
 };
 
 #endif

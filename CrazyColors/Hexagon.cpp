@@ -1,12 +1,14 @@
 #include "Hexagon.hpp"
 #include "util.hpp"
+#include <format>
 
 Hexagon::Hexagon(std::string title,
 	std::function<sf::Color(sf::Vector3f)> convertColor,
 	std::function<sf::Vector3f(sf::Vector3f)> modifyColor,
+	bool isClickable,
 	sf::Vector2f topLeft,
 	sf::Vector2f bottomRight
-) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(bottomRight - topLeft), _convertColor(convertColor), _modifyColor(modifyColor) {
+) : _sprite(_texture), _polygon(6), _topLeft(topLeft), _bottomRight(bottomRight), _border(bottomRight - topLeft), _convertColor(convertColor), _modifyColor(modifyColor), _isClickable(isClickable) {
 	_polygon.setFillColor(sf::Color::Transparent);
 	_polygon.setOutlineColor(sf::Color(220, 220, 220));
 	_polygon.setOutlineThickness(4.f);
@@ -19,6 +21,11 @@ Hexagon::Hexagon(std::string title,
 	_title.setCharacterSize(32);
 	_title.setString(title);
 	_title.setFillColor(sf::Color(220, 220, 220));
+
+	_clickInfo.setFont(font);
+	_clickInfo.setCharacterSize(32);
+	_clickInfo.setString("");
+	_clickInfo.setFillColor(sf::Color(220, 220, 220));
 
 	for (size_t i = 0; i < 3; i++) {
 		_labels[i].setFont(font);
@@ -68,6 +75,11 @@ void Hexagon::resize(sf::Vector2f topLeft, sf::Vector2f bottomRight) {
 	_labels[2].setPosition(sf::Vector2f(
 		_center.x + (radius + 24) * static_cast<float>(sqrt(3)) * 0.5f - 8.f,
 		_center.y + (radius + 24) * static_cast<float>(sqrt(3)) * 0.25f
+	));
+
+	_clickInfo.setPosition(sf::Vector2f(
+		_topLeft.x + 8.f,
+		_bottomRight.y - 48.f
 	));
 
 	generateTexture();
@@ -122,6 +134,8 @@ void Hexagon::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(_sprite);
 
 	target.draw(_polygon);
+
+	target.draw(_clickInfo);
 }
 
 bool Hexagon::getCoordinatesWithinRhombus(size_t rhombusOriginPoint, const sf::Vector2f& p, sf::Vector2f& result) const {
@@ -164,9 +178,31 @@ std::optional<sf::Vector3f> Hexagon::getHexCoordinates(const sf::Vector2f& p) co
 		returnValue = std::optional(_modifyColor(sf::Vector3f(result.x, 1, result.y)));
 		break;
 	case 4:
-		control = control && getCoordinatesWithinRhombus(4, p, result); 
+		control = control && getCoordinatesWithinRhombus(4, p, result);
 		returnValue = std::optional(_modifyColor(sf::Vector3f(result.y, result.x, 1)));
 		break;
 	}
 	return control ? returnValue : std::optional<sf::Vector3f>();
+}
+
+void Hexagon::handleMouseEvent(sf::Event event) {
+	if (!_isClickable)
+		return;
+
+	switch (event.type) {
+	case sf::Event::MouseButtonPressed:
+		handleMouseClick(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+	}
+}
+
+void Hexagon::handleMouseClick(sf::Vector2i mousePosition) {
+	auto coordinates = getHexCoordinates(static_cast<sf::Vector2f>(mousePosition));
+
+	if (coordinates.has_value()) {
+		_clickInfo.setString(std::format("({:.2f}, {:.2f}, {:.2f})", 
+			coordinates.value().x, coordinates.value().y, coordinates.value().z));
+	}
+	else {
+		_clickInfo.setString("");
+	}
 }
