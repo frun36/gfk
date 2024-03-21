@@ -15,7 +15,7 @@ int main(void) {
 
 	sf::RenderWindow window(sf::VideoMode(1280, 860), "Crazy Colors", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
 
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);
 
 	Slider slider;
 	ControlPanel controlPanel(slider);
@@ -82,16 +82,18 @@ int main(void) {
 		}
 
 		grid.regenerateTextures();
+		window.clear(sf::Color(32, 32, 32));
+		window.draw(grid);
 
-		frameTimes.push_back(frameClock.restart().asMicroseconds());
+		frameTimes.push_back(frameClock.getElapsedTime().asMicroseconds());
 		if (aroundHalfSecondClock.getElapsedTime().asSeconds() >= 0.5f && frameTimes.size() >= 1) {
 			controlPanel.setTimer(std::reduce(frameTimes.begin(), frameTimes.end()) / frameTimes.size());
 			frameTimes.clear();
 			aroundHalfSecondClock.restart();
 		}
 
-		window.clear(sf::Color(32, 32, 32));
-		window.draw(grid);
+		frameClock.restart();
+
 		window.display();
 	}
 

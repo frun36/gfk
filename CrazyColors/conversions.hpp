@@ -40,7 +40,7 @@ public:
 		float h = vec.x * 360.f;
 
 		float c = (1 - fabs(2 * vec.z - 1)) * vec.y;
-		float x = c * (1 - fabs(floatMod(h / 60.f, 2.f) - 1));
+		float x = c * (1 - fabs(fmodf(h / 60.f, 2.f) - 1));
 
 		float m = vec.z - c / 2;
 
@@ -57,7 +57,7 @@ public:
 		float h = vec.x * 360.f;
 
 		float c = vec.z * vec.y;
-		float x = c * (1 - fabs(floatMod(h / 60.f, 2.f) - 1));
+		float x = c * (1 - fabs(fmodf(h / 60.f, 2.f) - 1));
 
 		float m = vec.z - c;
 

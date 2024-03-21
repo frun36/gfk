@@ -97,7 +97,7 @@ bool Slider::handleMouseEvent(sf::Event event) {
 		}		
 		break;
 	case sf::Event::MouseWheelScrolled:
-		*this += event.mouseWheelScroll.delta * 0.1;
+		*this += event.mouseWheelScroll.delta * 0.1f;
 		return true;
 		break;
 	}
