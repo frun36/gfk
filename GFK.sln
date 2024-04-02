@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sokoban", "Sokoban\Sokoban.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyColors", "CrazyColors\CrazyColors.vcxproj", "{06BB3853-AD78-475A-B76A-29755C71AE34}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monkey", "Monkey\Monkey.vcxproj", "{690FC04A-E05D-4115-8A08-AB19EA68C22D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{06BB3853-AD78-475A-B76A-29755C71AE34}.Release|x64.Build.0 = Release|x64
 		{06BB3853-AD78-475A-B76A-29755C71AE34}.Release|x86.ActiveCfg = Release|Win32
 		{06BB3853-AD78-475A-B76A-29755C71AE34}.Release|x86.Build.0 = Release|Win32
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Debug|x64.ActiveCfg = Debug|x64
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Debug|x64.Build.0 = Debug|x64
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Debug|x86.ActiveCfg = Debug|Win32
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Debug|x86.Build.0 = Debug|Win32
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x64.ActiveCfg = Release|x64
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x64.Build.0 = Release|x64
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x86.ActiveCfg = Release|Win32
+		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
