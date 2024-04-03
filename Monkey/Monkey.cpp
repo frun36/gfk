@@ -44,7 +44,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_handDisplay->SetValue( 50 );
 	menuSizer->Add( m_handDisplay, 0, wxALL, 5 );
 
-	m_color = new wxButton( this, wxID_ANY, wxT("Set star color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_color = new wxButton( this, wxID_ANY, wxT("Set symbol color"), wxDefaultPosition, wxDefaultSize, 0 );
 	menuSizer->Add( m_color, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	m_label = new wxTextCtrl( this, wxID_ANY, wxT("helou"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -66,9 +66,9 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	this->Connect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::handleResize ) );
 	m_canvas->Connect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Connect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
+	m_canvas->Connect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::resize ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
 	m_onion->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrame::toggleOnion ), NULL, this );
 	m_handControl->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MainFrame::handleHandPositionChange ), NULL, this );
@@ -88,9 +88,9 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 MainFrame::~MainFrame()
 {
 	// Disconnect Events
-	this->Disconnect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::handleResize ) );
 	m_canvas->Disconnect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Disconnect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
+	m_canvas->Disconnect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::resize ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
 	m_onion->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrame::toggleOnion ), NULL, this );
 	m_handControl->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( MainFrame::handleHandPositionChange ), NULL, this );

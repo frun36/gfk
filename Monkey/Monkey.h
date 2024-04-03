@@ -48,9 +48,9 @@ class MainFrame : public wxFrame
 		wxChoice* m_shapes;
 
 		// Virtual event handlers, override them in your derived class
-		virtual void handleResize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void onBgErase( wxEraseEvent& event ) { event.Skip(); }
 		virtual void repaint( wxPaintEvent& event ) { event.Skip(); }
+		virtual void resize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void saveImage( wxCommandEvent& event ) { event.Skip(); }
 		virtual void toggleOnion( wxCommandEvent& event ) { event.Skip(); }
 		virtual void handleHandPositionChange( wxScrollEvent& event ) { event.Skip(); }
@@ -61,7 +61,7 @@ class MainFrame : public wxFrame
 
 	public:
 
-		MainFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		MainFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1000,1000 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~MainFrame();
 

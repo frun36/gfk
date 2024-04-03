@@ -6,6 +6,7 @@ MonkeyMainFrame::MonkeyMainFrame(wxWindow* parent)
 {
 	m_handControl->SetRange(100);
 	m_handControl->SetThumbPosition(50);
+	m_handControl->Disable();
 	m_onionImg.AddHandler(new wxPNGHandler);
 	m_onionImg.AddHandler(new wxJPEGHandler);
 	m_onionImg.LoadFile("onion.png", wxBITMAP_TYPE_PNG);
@@ -32,7 +33,7 @@ void MonkeyMainFrame::onBgErase(wxEraseEvent& event)
 void MonkeyMainFrame::repaint(wxPaintEvent& event)
 {
 	wxClientDC dc(m_canvas);
-	dc.SetDeviceOrigin(100, 100);
+	dc.SetDeviceOrigin(m_canvas->GetSize().x * 0.5 - 50, m_canvas->GetSize().y * 0.5 - 200);
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	m_canvas->ClearBackground();
@@ -49,13 +50,14 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 		dc.DrawCircle(wxPoint(50, 70), 30);
 		dc.SetBrush(*wxGREEN_BRUSH);
 		dc.DrawCircle(wxPoint(50, 50), 40);
-	} else {
+	}
+	else {
 		dc.SetBrush(*wxWHITE_BRUSH);
 		dc.DrawCircle(wxPoint(50, 105), 30);
 		dc.SetBrush(*wxGREEN_BRUSH);
 		dc.DrawCircle(wxPoint(50, 125), 40);
 	}
-	
+
 	// Eyes
 	dc.SetBrush(*wxWHITE_BRUSH);
 	dc.DrawCircle(wxPoint(30, 30), 10);
@@ -71,7 +73,15 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	// Text
-	dc.DrawText(m_label->GetLineText(0), wxPoint(300, 300));
+	dc.SetTextForeground(*wxBLACK);
+	wxFont font(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
+	dc.SetFont(font);
+
+	dc.DrawText(m_label->GetLineText(0), wxPoint(200, 300));
+
+	wxFont font2(24, wxFONTFAMILY_DECORATIVE, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_NORMAL, false);
+	dc.SetFont(font2);
+	dc.DrawRotatedText(m_label->GetLineText(0), -200, 200, 90);
 
 	// Onion
 	if (m_hasOnion)
@@ -96,12 +106,17 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	}
 }
 
+void MonkeyMainFrame::resize(wxSizeEvent& event)
+{
+	Refresh();
+}
+
 void MonkeyMainFrame::saveImage(wxCommandEvent& event)
 {
 	wxFileDialog dialog(this, "Save Image", "", "", "JPG files (*.jpg)|*.jpg", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString filePath = dialog.GetPath();
-		
+
 		wxBitmap bitmap(m_canvas->GetSize());
 		wxMemoryDC memDC(bitmap);
 		wxClientDC dc(m_canvas);
@@ -114,6 +129,12 @@ void MonkeyMainFrame::saveImage(wxCommandEvent& event)
 void MonkeyMainFrame::toggleOnion(wxCommandEvent& event)
 {
 	m_hasOnion = event.IsChecked();
+	if (event.IsChecked()) {
+		m_handControl->Enable();
+	}
+	else {
+		m_handControl->Disable();
+	}
 	Refresh();
 }
 

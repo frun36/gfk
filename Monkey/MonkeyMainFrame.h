@@ -19,6 +19,7 @@ class MonkeyMainFrame : public MainFrame
 		// Handlers for MainFrame events.
 		void onBgErase( wxEraseEvent& event );
 		void repaint( wxPaintEvent& event );
+		void resize( wxSizeEvent& event );
 		void saveImage( wxCommandEvent& event );
 		void toggleOnion( wxCommandEvent& event );
 		void handleHandPositionChange( wxScrollEvent& event );
@@ -48,6 +49,9 @@ class MonkeyMainFrame : public MainFrame
 		wxPoint m_starVertices[6];
 
 		wxBrush m_starBrush;
+
+
+
 
 };
 
