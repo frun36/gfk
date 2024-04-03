@@ -29,11 +29,18 @@ class MonkeyMainFrame : public MainFrame
 		MonkeyMainFrame( wxWindow* parent );
 	//// end generated class members
 
+	private:
 		wxImage m_onionImg;
 		wxBitmap m_onionBitmap;
 
 
 		bool m_hasOnion;
+
+		wxPoint m_onionPosition;
+
+		void setOnionPosition(double frac) {
+			m_onionPosition = wxPoint(200, 150 - frac * 100);
+		}
 
 };
 

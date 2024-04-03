@@ -10,6 +10,7 @@ MonkeyMainFrame::MonkeyMainFrame(wxWindow* parent)
 	m_onionImg.LoadFile("onion.png", wxBITMAP_TYPE_PNG);
 	m_onionBitmap = wxBitmap(m_onionImg);
 	m_hasOnion = m_onion->IsChecked();
+	setOnionPosition(static_cast<double>(m_handControl->GetThumbPosition()) / m_handControl->GetRange());
 }
 
 void MonkeyMainFrame::onBgErase(wxEraseEvent& event)
@@ -53,12 +54,16 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	dc.SetBrush(*wxGREEN_BRUSH);
 	dc.DrawCircle(wxPoint(50, 200), 100);
 
+	// Arm
+	dc.SetPen(*wxGREEN_PEN);
+	dc.DrawLine(wxPoint(50, 200), wxPoint(m_onionPosition.x + m_onionBitmap.GetWidth(), m_onionPosition.y + m_onionBitmap.GetHeight()));
+
 	// Text
 	dc.DrawText(m_label->GetLineText(0), wxPoint(300, 300));
 
 	// Onion
 	if (m_hasOnion)
-		dc.DrawBitmap(m_onionBitmap, wxPoint(200, 100));
+		dc.DrawBitmap(m_onionBitmap, m_onionPosition);
 }
 
 void MonkeyMainFrame::saveImage(wxCommandEvent& event)
@@ -75,6 +80,8 @@ void MonkeyMainFrame::toggleOnion(wxCommandEvent& event)
 void MonkeyMainFrame::handleHandPositionChange(wxScrollEvent& event)
 {
 	m_handDisplay->SetValue(event.GetPosition());
+	setOnionPosition(static_cast<double>(m_handControl->GetThumbPosition()) / m_handControl->GetRange());
+	Refresh();
 }
 
 void MonkeyMainFrame::chooseColor(wxCommandEvent& event)
