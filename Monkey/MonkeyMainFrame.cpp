@@ -7,10 +7,21 @@ MonkeyMainFrame::MonkeyMainFrame(wxWindow* parent)
 	m_handControl->SetRange(100);
 	m_handControl->SetThumbPosition(50);
 	m_onionImg.AddHandler(new wxPNGHandler);
+	m_onionImg.AddHandler(new wxJPEGHandler);
 	m_onionImg.LoadFile("onion.png", wxBITMAP_TYPE_PNG);
 	m_onionBitmap = wxBitmap(m_onionImg);
 	m_hasOnion = m_onion->IsChecked();
 	setOnionPosition(static_cast<double>(m_handControl->GetThumbPosition()) / m_handControl->GetRange());
+	m_symbol = STAR;
+
+	m_starVertices[0] = wxPoint(50, 0);
+	m_starVertices[1] = wxPoint(25, 90);
+	m_starVertices[2] = wxPoint(100, 30);
+	m_starVertices[3] = wxPoint(0, 30);
+	m_starVertices[4] = wxPoint(75, 90);
+	m_starVertices[5] = wxPoint(50, 0);
+
+	m_starBrush = *wxBLACK_BRUSH;
 }
 
 void MonkeyMainFrame::onBgErase(wxEraseEvent& event)
@@ -57,6 +68,7 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	// Arm
 	dc.SetPen(*wxGREEN_PEN);
 	dc.DrawLine(wxPoint(50, 200), wxPoint(m_onionPosition.x + m_onionBitmap.GetWidth(), m_onionPosition.y + m_onionBitmap.GetHeight()));
+	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	// Text
 	dc.DrawText(m_label->GetLineText(0), wxPoint(300, 300));
@@ -64,11 +76,39 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	// Onion
 	if (m_hasOnion)
 		dc.DrawBitmap(m_onionBitmap, m_onionPosition);
+
+	// Symbol
+	switch (m_symbol) {
+	case SUN:
+		dc.SetBrush(*wxYELLOW_BRUSH);
+		dc.DrawCircle(wxPoint(250, 0), 40);
+		break;
+	case STAR:
+		dc.SetBrush(m_starBrush);
+		dc.DrawPolygon(6, m_starVertices, 200, -50);
+		break;
+	case MOON:
+		dc.SetBrush(*wxGREY_BRUSH);
+		dc.DrawCircle(wxPoint(250, 0), 40);
+		dc.SetBrush(*wxWHITE_BRUSH);
+		dc.DrawCircle(wxPoint(230, -20), 40);
+		break;
+	}
 }
 
 void MonkeyMainFrame::saveImage(wxCommandEvent& event)
 {
-	// TODO: Implement saveImage
+	wxFileDialog dialog(this, "Save Image", "", "", "JPG files (*.jpg)|*.jpg", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (dialog.ShowModal() == wxID_OK) {
+		wxString filePath = dialog.GetPath();
+		
+		wxBitmap bitmap(m_canvas->GetSize());
+		wxMemoryDC memDC(bitmap);
+		wxClientDC dc(m_canvas);
+		memDC.Blit(0, 0, m_canvas->GetSize().GetWidth(), m_canvas->GetSize().GetHeight(), &dc, 0, 0);
+
+		bitmap.SaveFile(filePath, wxBITMAP_TYPE_JPEG);
+	}
 }
 
 void MonkeyMainFrame::toggleOnion(wxCommandEvent& event)
@@ -86,7 +126,13 @@ void MonkeyMainFrame::handleHandPositionChange(wxScrollEvent& event)
 
 void MonkeyMainFrame::chooseColor(wxCommandEvent& event)
 {
-	// TODO: Implement chooseColor
+	wxColourDialog dialog(this);
+	if (dialog.ShowModal() == wxID_OK) {
+		wxColourData data = dialog.GetColourData();
+		wxColour color = data.GetColour();
+		m_starBrush = wxBrush(color); // Update star color
+		Refresh(); // Redraw the panel to apply the new color
+	}
 }
 
 void MonkeyMainFrame::changeLabel(wxCommandEvent& event)
@@ -96,5 +142,6 @@ void MonkeyMainFrame::changeLabel(wxCommandEvent& event)
 
 void MonkeyMainFrame::changeSymbol(wxCommandEvent& event)
 {
-	// TODO: Implement changeSymbol
+	m_symbol = static_cast<MonkeyMainFrame::Symbol>(event.GetInt());
+	Refresh();
 }

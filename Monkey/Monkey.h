@@ -48,6 +48,7 @@ class MainFrame : public wxFrame
 		wxChoice* m_shapes;
 
 		// Virtual event handlers, override them in your derived class
+		virtual void handleResize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void onBgErase( wxEraseEvent& event ) { event.Skip(); }
 		virtual void repaint( wxPaintEvent& event ) { event.Skip(); }
 		virtual void saveImage( wxCommandEvent& event ) { event.Skip(); }

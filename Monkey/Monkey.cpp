@@ -44,13 +44,13 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_handDisplay->SetValue( 50 );
 	menuSizer->Add( m_handDisplay, 0, wxALL, 5 );
 
-	m_color = new wxButton( this, wxID_ANY, wxT("Set symbol color"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_color = new wxButton( this, wxID_ANY, wxT("Set star color"), wxDefaultPosition, wxDefaultSize, 0 );
 	menuSizer->Add( m_color, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	m_label = new wxTextCtrl( this, wxID_ANY, wxT("helou"), wxDefaultPosition, wxDefaultSize, 0 );
 	menuSizer->Add( m_label, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	wxString m_shapesChoices[] = { wxT("Star"), wxT("Sun") };
+	wxString m_shapesChoices[] = { wxT("Sun"), wxT("Star"), wxT("Moon") };
 	int m_shapesNChoices = sizeof( m_shapesChoices ) / sizeof( wxString );
 	m_shapes = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_shapesNChoices, m_shapesChoices, 0 );
 	m_shapes->SetSelection( 1 );
@@ -66,6 +66,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	this->Connect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::handleResize ) );
 	m_canvas->Connect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Connect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
@@ -87,6 +88,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 MainFrame::~MainFrame()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_SIZE, wxSizeEventHandler( MainFrame::handleResize ) );
 	m_canvas->Disconnect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Disconnect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
