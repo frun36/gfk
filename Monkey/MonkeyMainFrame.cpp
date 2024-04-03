@@ -4,9 +4,17 @@ MonkeyMainFrame::MonkeyMainFrame(wxWindow* parent)
 	:
 	MainFrame(parent)
 {
-	m_img.AddHandler(new wxPNGHandler);
-	m_img.LoadFile("onion.png", wxBITMAP_TYPE_PNG);
-	m_onion = wxBitmap(m_img);
+	m_handControl->SetRange(100);
+	m_handControl->SetThumbPosition(50);
+	m_onionImg.AddHandler(new wxPNGHandler);
+	m_onionImg.LoadFile("onion.png", wxBITMAP_TYPE_PNG);
+	m_onionBitmap = wxBitmap(m_onionImg);
+	m_hasOnion = m_onion->IsChecked();
+}
+
+void MonkeyMainFrame::onBgErase(wxEraseEvent& event)
+{
+	event.Skip(false);
 }
 
 void MonkeyMainFrame::repaint(wxPaintEvent& event)
@@ -15,6 +23,8 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	dc.SetDeviceOrigin(100, 100);
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
+	m_canvas->ClearBackground();
+
 	// Head
 	dc.SetBrush(*wxGREEN_BRUSH);
 	dc.DrawRectangle(0, 0, 100, 120);
@@ -22,11 +32,18 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	dc.DrawRectangle(75, -40, 10, 40);
 
 	// Mouth
-	dc.SetBrush(*wxWHITE_BRUSH);
-	dc.DrawCircle(wxPoint(50, 70), 30);
-	dc.SetBrush(*wxGREEN_BRUSH);
-	dc.DrawCircle(wxPoint(50, 50), 40);
-
+	if (m_hasOnion) {
+		dc.SetBrush(*wxWHITE_BRUSH);
+		dc.DrawCircle(wxPoint(50, 70), 30);
+		dc.SetBrush(*wxGREEN_BRUSH);
+		dc.DrawCircle(wxPoint(50, 50), 40);
+	} else {
+		dc.SetBrush(*wxWHITE_BRUSH);
+		dc.DrawCircle(wxPoint(50, 105), 30);
+		dc.SetBrush(*wxGREEN_BRUSH);
+		dc.DrawCircle(wxPoint(50, 125), 40);
+	}
+	
 	// Eyes
 	dc.SetBrush(*wxWHITE_BRUSH);
 	dc.DrawCircle(wxPoint(30, 30), 10);
@@ -40,34 +57,34 @@ void MonkeyMainFrame::repaint(wxPaintEvent& event)
 	dc.DrawText(m_label->GetLineText(0), wxPoint(300, 300));
 
 	// Onion
-	dc.DrawBitmap(m_onion, wxPoint(200, 100));
+	if (m_hasOnion)
+		dc.DrawBitmap(m_onionBitmap, wxPoint(200, 100));
 }
 
 void MonkeyMainFrame::saveImage(wxCommandEvent& event)
 {
-
+	// TODO: Implement saveImage
 }
 
 void MonkeyMainFrame::toggleOnion(wxCommandEvent& event)
 {
-	// TODO: Implement toggleBanana
+	m_hasOnion = event.IsChecked();
+	Refresh();
 }
 
 void MonkeyMainFrame::handleHandPositionChange(wxScrollEvent& event)
 {
-	wxString msg;
-	msg.Printf(wxT("Position: %d"), event.GetPosition());
-	wxMessageBox(msg);
+	m_handDisplay->SetValue(event.GetPosition());
 }
 
 void MonkeyMainFrame::chooseColor(wxCommandEvent& event)
 {
-
+	// TODO: Implement chooseColor
 }
 
 void MonkeyMainFrame::changeLabel(wxCommandEvent& event)
 {
-	// TODO: Implement changeLabel
+	Refresh();
 }
 
 void MonkeyMainFrame::changeSymbol(wxCommandEvent& event)

@@ -38,7 +38,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	menuSizer->Add( m_onion, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	m_handControl = new wxScrollBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL );
-	menuSizer->Add( m_handControl, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	menuSizer->Add( m_handControl, 0, wxALL|wxEXPAND, 5 );
 
 	m_handDisplay = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
 	m_handDisplay->SetValue( 50 );
@@ -66,6 +66,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	this->Centre( wxBOTH );
 
 	// Connect Events
+	m_canvas->Connect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Connect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
 	m_onion->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrame::toggleOnion ), NULL, this );
@@ -86,6 +87,7 @@ MainFrame::MainFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 MainFrame::~MainFrame()
 {
 	// Disconnect Events
+	m_canvas->Disconnect( wxEVT_ERASE_BACKGROUND, wxEraseEventHandler( MainFrame::onBgErase ), NULL, this );
 	m_canvas->Disconnect( wxEVT_PAINT, wxPaintEventHandler( MainFrame::repaint ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MainFrame::saveImage ), NULL, this );
 	m_onion->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( MainFrame::toggleOnion ), NULL, this );

@@ -16,6 +16,7 @@ class MonkeyMainFrame : public MainFrame
 {
 	protected:
 		// Handlers for MainFrame events.
+		void onBgErase( wxEraseEvent& event );
 		void repaint( wxPaintEvent& event );
 		void saveImage( wxCommandEvent& event );
 		void toggleOnion( wxCommandEvent& event );
@@ -28,17 +29,11 @@ class MonkeyMainFrame : public MainFrame
 		MonkeyMainFrame( wxWindow* parent );
 	//// end generated class members
 
-		wxImage m_img;
-		wxBitmap m_onion;
+		wxImage m_onionImg;
+		wxBitmap m_onionBitmap;
 
 
-
-
-
-
-
-
-
+		bool m_hasOnion;
 
 };
 
