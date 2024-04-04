@@ -32,11 +32,13 @@ void MonkeyMainFrame::onBgErase(wxEraseEvent& event)
 
 void MonkeyMainFrame::repaint(wxPaintEvent& event)
 {
-	wxClientDC dc(m_canvas);
+	wxClientDC dc1(m_canvas);
+	wxBufferedDC dc(&dc1);
 	dc.SetDeviceOrigin(m_canvas->GetSize().x * 0.5 - 50, m_canvas->GetSize().y * 0.5 - 200);
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
-	m_canvas->ClearBackground();
+	dc.SetBackground(*wxWHITE_BRUSH);
+	dc.Clear();
 
 	// Head
 	dc.SetBrush(*wxGREEN_BRUSH);
