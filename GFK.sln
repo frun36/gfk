@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyColors", "CrazyColors\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monkey", "Monkey\Monkey.vcxproj", "{690FC04A-E05D-4115-8A08-AB19EA68C22D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyPlots", "CrazyPlots\CrazyPlots.vcxproj", "{68DC5798-3B9F-4B94-A872-590DB26619DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x64.Build.0 = Release|x64
 		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x86.ActiveCfg = Release|Win32
 		{690FC04A-E05D-4115-8A08-AB19EA68C22D}.Release|x86.Build.0 = Release|Win32
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Debug|x64.ActiveCfg = Debug|x64
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Debug|x64.Build.0 = Debug|x64
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Debug|x86.ActiveCfg = Debug|Win32
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Debug|x86.Build.0 = Debug|Win32
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Release|x64.ActiveCfg = Release|x64
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Release|x64.Build.0 = Release|x64
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Release|x86.ActiveCfg = Release|Win32
+		{68DC5798-3B9F-4B94-A872-590DB26619DB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
