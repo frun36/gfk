@@ -7,12 +7,12 @@ class Config {
 public:
 	enum class Origin { WORLD, SCREEN };
 private:
-	double _x0, _y0, _x1, _y1;	// world rectangle coordinates
-	double _alpha;				// plot rotation angle
-	enum class Origin _rotationOrigin;
-	double _xTrans, _yTrans;	// translation relative to the screen center
-	double _xStart, _xEnd;		// x values
-	int _function;				// selected function
+	double _x0 = -1, _y0 = -2, _x1 = 1, _y1 = 2;		// world rectangle coordinates
+	double _alpha = 0;									// plot rotation angle
+	enum class Origin _rotationOrigin = Origin::WORLD;
+	double _xTrans = 0, _yTrans = 0;					// translation relative to the screen center
+	double _xStart = -1, _xEnd = 2;						// x values
+	int _function = 0;									// selected function
 public:
 	Config();
 	

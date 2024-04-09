@@ -110,6 +110,8 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	this->Layout();
 	this->Centre(wxBOTH);
 
+	displayConfig();
+
 	_canvas->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::repaintEventHandler), NULL, this);
 }
 
@@ -117,6 +119,9 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 void MainFrame::repaint() {
 	wxClientDC dc1(_canvas);
 	wxBufferedDC dc(&dc1);
+
+	dc.SetBrush(*wxWHITE_BRUSH);
+	dc.Clear();
 
 	Plot plt(_config);
 	int w, h;

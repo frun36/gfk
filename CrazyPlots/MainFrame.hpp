@@ -8,6 +8,8 @@
 #include "Config.hpp"
 #include "Plot.hpp"
 
+#include <format>
+
 class MainFrame : public wxFrame {
 private:
 	std::shared_ptr<Config> _config;
@@ -26,6 +28,34 @@ private:
 	void repaint();
 
 	void repaintEventHandler(wxUpdateUIEvent& event) { repaint(); }
+
+	void displayConfig() {
+		_x0Control->SetValue(std::format("{:.2}", _config->getX0()));
+		_y0Control->SetValue(std::format("{:.2}", _config->getY0()));
+		_x1Control->SetValue(std::format("{:.2}", _config->getX1()));
+		_y1Control->SetValue(std::format("{:.2}", _config->getY1()));
+
+		_xTransControl->SetValue(std::format("{:.2}", _config->getXTrans()));
+		_yTransControl->SetValue(std::format("{:.2}", _config->getYTrans()));
+
+		_xStartControl->SetValue(std::format("{:.2}", _config->getXStart()));
+		_xEndControl->SetValue(std::format("{:.2}", _config->getXEnd()));
+
+		_rotationControl->SetScrollPos(1, static_cast<int>(_config->getAlpha()));
+		_rotationLabel->SetLabelText(std::format("{:.2}", _config->getAlpha()));
+
+		if (_config->getRotationOrigin() == Config::Origin::SCREEN) {
+			_screenCenterControl->SetValue(true);
+			_worldCenterControl->SetValue(false);
+		}
+		else {
+			_screenCenterControl->SetValue(false);
+			_worldCenterControl->SetValue(true);
+		}
+
+		_functionControl->SetSelection(_config->getFunction());
+
+	}
 
 public:
 	MainFrame(std::shared_ptr<Config> config);

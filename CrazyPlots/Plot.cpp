@@ -3,5 +3,5 @@
 #include "Plot.hpp"
 
 void Plot::draw(wxDC& dc, int width, int height) {
-	dc.DrawRectangle(wxRect(10, 10, 200, 200));
+	dc.DrawRectangle(wxRect(0, 0, 200, 200));
 }
