@@ -9,6 +9,7 @@ public:
 		SetProcessDPIAware();
 		MainFrame* frame = new MainFrame();
 		frame->Show(true);
+		SetTopWindow(frame);
 		return true;
 	}
 };

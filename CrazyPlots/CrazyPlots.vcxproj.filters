@@ -23,5 +23,8 @@
     <ClInclude Include="MainFrame.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Linalg.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
