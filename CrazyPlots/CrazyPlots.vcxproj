@@ -130,6 +130,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="MainFrame.cpp" />
+    <ClCompile Include="Plot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.hpp" />

@@ -109,4 +109,21 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	this->SetSizer(mainSizer);
 	this->Layout();
 	this->Centre(wxBOTH);
+
+	_canvas->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::repaintEventHandler), NULL, this);
+}
+
+
+void MainFrame::repaint() {
+	wxClientDC dc1(_canvas);
+	wxBufferedDC dc(&dc1);
+
+	Plot plt(_config);
+	int w, h;
+	_canvas->GetSize(&w, &h);
+	plt.draw(dc, w, h);
+}
+
+MainFrame::~MainFrame() {
+	_canvas->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::repaintEventHandler), NULL, this);
 }
