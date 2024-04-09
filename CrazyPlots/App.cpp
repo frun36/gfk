@@ -1,13 +1,17 @@
 #include <wx/wx.h>
 
 #include "MainFrame.hpp"
+#include "Config.hpp"
 
-class App : public wxApp
-{
+#include <memory>
+
+class App : public wxApp {
 public:
 	bool OnInit() {
+		auto config = std::make_shared<Config>();
+
 		SetProcessDPIAware();
-		MainFrame* frame = new MainFrame();
+		MainFrame* frame = new MainFrame(config);
 		frame->Show(true);
 		SetTopWindow(frame);
 		return true;
