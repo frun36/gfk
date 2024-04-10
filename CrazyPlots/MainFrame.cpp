@@ -86,6 +86,8 @@ void MainFrame::updateConfig() {
 
 	// Function
 	_config->setFunction(_functionControl->GetSelection());
+
+	Refresh();
 }
 
 MainFrame::MainFrame(std::shared_ptr<Config> config)
@@ -129,7 +131,7 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 
 	// Rotation
 	_rotationControl = new wxScrollBar(this, wxID_ANY);
-	_rotationControl->SetRange(359);
+	_rotationControl->SetRange(360);
 
 	_rotationLabel = new wxStaticText(this, wxID_ANY, "-");
 	_rotationLabel->SetMaxSize(wxSize(100, -1));
@@ -198,7 +200,17 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_yTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
 	_xStartControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
 	_xEndControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+
+	/*_rotationControl->Bind(wxEVT_SCROLL_TOP, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_BOTTOM, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_LINEUP, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_LINEDOWN, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_PAGEUP, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_PAGEDOWN, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_THUMBTRACK, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_THUMBRELEASE, [this](wxScrollEvent&) { updateConfig(); });*/
 	_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent&) { updateConfig(); });
+
 	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { updateConfig(); });

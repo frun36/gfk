@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Linalg.hpp" />
+    <ClInclude Include="Line.hpp" />
     <ClInclude Include="MainFrame.hpp" />
     <ClInclude Include="Plot.hpp" />
   </ItemGroup>
