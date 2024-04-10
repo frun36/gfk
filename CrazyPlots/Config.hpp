@@ -12,6 +12,7 @@ private:
 	enum class Origin _rotationOrigin = Origin::WORLD;
 	double _xTrans = 0, _yTrans = 0;					// translation relative to the screen center
 	double _xStart = -1, _xEnd = 2;						// x values
+	double _yMin = 0, _yMax = 0;
 	int _function = 0;									// selected function
 public:
 	Config();
@@ -21,6 +22,12 @@ public:
 	
 	double getXEnd() const { return _xEnd; }
 	void setXEnd(double x) { _xEnd = x; }
+
+	double getYMin() const { return _yMin; }
+	void setYMin(double y) { _yMin = y; }
+
+	double getYMax() const { return _yMax; }
+	void setYMax(double y) { _yMax = y; }
 
 	Origin getRotationOrigin() const { return _rotationOrigin; }
 	void setRotationOrigin(Origin origin) { _rotationOrigin = origin; }

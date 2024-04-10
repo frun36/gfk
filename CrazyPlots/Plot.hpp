@@ -10,14 +10,16 @@
 class Plot {
 private:
     std::shared_ptr<Config> _config;
-    size_t xResolution;  // number of segments in plot
-    double x_min, x_max; // range of x values
-    double y_min, y_max; // range of y values
+    size_t _xResolution = 100;  // number of segments in plot
+    double _yMin = -1, _yMax = 1;
 
 public:
     Plot(std::shared_ptr<Config> config) : _config(config) {}
 
     void draw(wxDC& dc, int width, int height);  // draws the plot
+
+    double getYMin() const { return _yMin; }
+    double getYMax() const { return _yMax; }
 };
 
 #endif

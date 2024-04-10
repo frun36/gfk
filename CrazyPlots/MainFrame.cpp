@@ -43,19 +43,15 @@ void MainFrame::displayConfig() {
 
 double MainFrame::stringToDouble(const wxString& str) {
 	if (str.empty() || str == "-") {
-		// Return a default value or handle the empty case appropriately
-		return 0.0; // Default value (you may choose a different default)
+		return 0.0;
+	}
+	
+	double value;
+	if (str.ToDouble(&value)) {
+		return value;
 	}
 	else {
-		double value;
-		if (str.ToDouble(&value)) {
-			return value;
-		}
-		else {
-			// Error handling if the conversion fails
-			std::cerr << "Error: Conversion failed for string: " << str << std::endl;
-			return 0.0; // Default value or handle the error case appropriately
-		}
+		return 0.0;
 	}
 }
 
@@ -169,7 +165,7 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	AddRow(menuSizer, "y min", _yMinLabel, "y max", _yMaxLabel);
 
 	// Dropdown menu
-	wxString choices[] = { "Choice 1", "Choice 2", "Choice 3" };
+	wxString choices[] = { "x*sin(4x)", "x^2", "0.5*exp(4x-3x^2)" };
 	_functionControl = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, WXSIZEOF(choices), choices);
 	menuSizer->Add(_functionControl, 0, wxEXPAND | wxALL, 5);
 
@@ -234,4 +230,7 @@ void MainFrame::repaint() {
 	int w, h;
 	_canvas->GetSize(&w, &h);
 	plt.draw(dc, w, h);
+
+	_yMinLabel->SetLabelText(std::format("{:.2}", plt.getYMin()));
+	_yMaxLabel->SetLabelText(std::format("{:.2}", plt.getYMax()));
 }
