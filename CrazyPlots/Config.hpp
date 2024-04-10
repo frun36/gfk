@@ -5,18 +5,16 @@
 
 class Config {
 public:
-	enum class Origin { WORLD, SCREEN };
+	enum Origin { WORLD, SCREEN };
 private:
 	double _x0 = -1, _y0 = -2, _x1 = 1, _y1 = 2;		// world rectangle coordinates
 	double _alpha = 0;									// plot rotation angle
-	enum class Origin _rotationOrigin = Origin::WORLD;
+	Origin _rotationOrigin = Origin::WORLD;
 	double _xTrans = 0, _yTrans = 0;					// translation relative to the screen center
 	double _xStart = -1, _xEnd = 2;						// x values
 	double _yMin = 0, _yMax = 0;
 	int _function = 0;									// selected function
 public:
-	Config();
-	
 	double getXStart() const { return _xStart; }
 	void setXStart(double x) { _xStart = x; }
 	
@@ -56,7 +54,7 @@ public:
 	int getFunction() const { return _function; }
 	void setFunction(int function) { _function = function; }
 
-	void save(std::string filename);
+	void save(std::string filename) const;
 	void load(std::string filename);
 };
 

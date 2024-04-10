@@ -39,13 +39,14 @@ void MainFrame::displayConfig() {
 
 	_functionControl->SetSelection(_config->getFunction());
 
+	Refresh();
 }
 
 double MainFrame::stringToDouble(const wxString& str) {
 	if (str.empty() || str == "-") {
 		return 0.0;
 	}
-	
+
 	double value;
 	if (str.ToDouble(&value)) {
 		return value;
@@ -210,16 +211,36 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { updateConfig(); });
-	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { 
+	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		_x0Control->SetLabelText(_xStartControl->GetLineText(0));
 		_x1Control->SetLabelText(_xEndControl->GetLineText(0));
-		updateConfig(); 
-	});
-	_saveControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
-	_loadControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
+		updateConfig();
+		});
+	_saveControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+		wxString wildcard = "Config files (*.cfg)|*.cfg";
+		wxFileDialog saveFileDialog(this, _("Save config file"), "", "", wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;
 
+		wxString path = saveFileDialog.GetPath();
 
+		_config->save(path.ToStdString());
+		});
+	_loadControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+		wxString wildcard = "Config files (*.cfg)|*.cfg";
+		wxFileDialog openFileDialog(this, _("Open config file"), "", "", wildcard, wxFD_OPEN);
+
+		if (openFileDialog.ShowModal() == wxID_CANCEL)
+			return;
+
+		wxString path = openFileDialog.GetPath();
+		
+		_config->load(path.ToStdString());
+
+		displayConfig();
+		repaint();
+		});
 }
 
 
