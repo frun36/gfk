@@ -2,6 +2,7 @@
 
 #include "Plot.hpp"
 #include "Line.hpp"
+#include <format>
 
 void Plot::draw(wxDC& dc, int width, int height) {
 	// Function + min/max values
@@ -58,12 +59,15 @@ void Plot::draw(wxDC& dc, int width, int height) {
 
 
 	// Transform of each line
-	auto display = [&](Line line) {
-		line
+	auto transform = [&](Line line) {
+		return line
 			.transform(worldCoordinates)
 			.transform(Matrix::identity().translate(_config->getXTrans(), _config->getYTrans()))
-			.transform(Matrix::identity().rotate(-_config->getAlpha()).fromOrigin(xOrigin + _config->getXTrans(), yOrigin + _config->getYTrans()))
-			.draw(dc);
+			.transform(Matrix::identity().rotate(-_config->getAlpha()).fromOrigin(xOrigin + _config->getXTrans(), yOrigin + _config->getYTrans()));
+		};
+
+	auto display = [&](Line line) {
+		transform(line).draw(dc);
 		};
 
 
@@ -72,8 +76,12 @@ void Plot::draw(wxDC& dc, int width, int height) {
 
 	// X ticks
 	double xTickStep = (_config->getXEnd() - _config->getXStart()) / 4;
-	for (size_t i = 1; i < 4; i++)
-		display(Line(_config->getXStart() + xTickStep * i, -0.05, _config->getXStart() + xTickStep * i, 0.05));
+	for (size_t i = 1; i < 4; i++) {
+		x0 = _config->getXStart() + xTickStep * i;
+		display(Line(x0, -0.05, x0, 0.05));
+		dc.DrawRotatedText(std::format("{:.2f}", x0), transform(Line(x0, -0.05)).x0, transform(Line(x0, -0.05)).y0, _config->getAlpha());
+	}
+
 
 	// X Arrow
 	display(Line(_config->getXEnd(), 0, _config->getXEnd() - 0.1, 0.05));
@@ -85,12 +93,16 @@ void Plot::draw(wxDC& dc, int width, int height) {
 
 	// Y ticks
 	double yTickStep = (_yMax - _yMin) / 4;
-	for (size_t i = 1; i < 4; i++)
-		display(Line(-0.05, _yMin + yTickStep * i, 0.05, _yMin + yTickStep * i));
+	double y0;
+	for (size_t i = 1; i < 4; i++) {
+		y0 = _yMin + yTickStep * i;
+		display(Line(-0.05, y0, 0.05, y0));
+		dc.DrawRotatedText(std::format("{:.2f}", y0), transform(Line(0.1, y0)).x0, transform(Line(0.1, y0)).y0, _config->getAlpha());
+	}
 
 	// Y Arrow
-	display(Line(0, _yMax, 0.05, _yMax - 0.1));
-	display(Line(0, _yMax, -0.05, _yMax - 0.1));
+	display(Line(0, _yMax, 0.05, _yMax - 0.05));
+	display(Line(0, _yMax, -0.05, _yMax - 0.05));
 
 	// Plot
 	dc.SetPen(*wxBLUE_PEN);

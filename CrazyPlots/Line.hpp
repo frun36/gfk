@@ -5,15 +5,14 @@
 #include <wx/wx.h>
 
 class Line {
-private:
-	double _x0, _y0, _x1, _y1;
-
 public:
-	Line(double x0, double y0, double x1, double y1) : _x0(x0), _y0(y0), _x1(x1), _y1(y1) {}
+	double x0, y0, x1, y1;
+
+	Line(double x0, double y0, double x1 = 0, double y1 = 0) : x0(x0), y0(y0), x1(x1), y1(y1) {}
 
 	Line transform(Matrix m) {
-		Vector v0(_x0, _y0);
-		Vector v1(_x1, _y1);
+		Vector v0(x0, y0);
+		Vector v1(x1, y1);
 
 		v0 = m * v0;
 		v1 = m * v1;
@@ -21,8 +20,8 @@ public:
 		return Line(v0.getX(), v0.getY(), v1.getX(), v1.getY());
 	}
 
-	void draw(wxDC& dc) {
-		dc.DrawLine(_x0, _y0, _x1, _y1);
+	void draw(wxDC& dc) const {
+		dc.DrawLine(x0, y0, x1, y1);
 	}
 };
 
