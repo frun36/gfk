@@ -10,7 +10,7 @@
 class Plot {
 private:
     std::shared_ptr<Config> _config;
-    size_t _xResolution = 100;  // number of segments in plot
+    size_t _xResolution = 128;  // number of segments in plot
     double _yMin = -1, _yMax = 1;
 
 public:

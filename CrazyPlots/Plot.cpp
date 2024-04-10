@@ -56,10 +56,10 @@ void Plot::draw(wxDC& dc, int width, int height) {
 		.coordinateChange(
 			_config->getX0(),
 			_config->getY0(),
-			0,
-			height,
-			width / (_config->getX1() - _config->getX0()),
-			-height / (_config->getY1() - _config->getY0())
+			clippingRect.x,
+			clippingRect.y + clippingRect.height,
+			clippingRect.width / (_config->getX1() - _config->getX0()),
+			-clippingRect.height / (_config->getY1() - _config->getY0())
 		);
 
 

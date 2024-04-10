@@ -123,7 +123,7 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_y1Control->SetMaxSize(wxSize(100, -1));
 
 	AddRow(menuSizer, "x0", _x0Control, "y0", _y0Control);
-	AddRow(menuSizer, "x1", _x1Control, "y0", _y1Control);
+	AddRow(menuSizer, "x1", _x1Control, "y1", _y1Control);
 
 	// Rotation
 	_rotationControl = new wxScrollBar(this, wxID_ANY);
@@ -210,7 +210,11 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { updateConfig(); });
-	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
+	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { 
+		_x0Control->SetLabelText(_xStartControl->GetLineText(0));
+		_x1Control->SetLabelText(_xEndControl->GetLineText(0));
+		updateConfig(); 
+	});
 	_saveControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
 	_loadControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
 
