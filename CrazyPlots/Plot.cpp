@@ -5,6 +5,11 @@
 #include <format>
 
 void Plot::draw(wxDC& dc, int width, int height) {
+	dc.SetPen(*wxRED_PEN);
+	wxRect clippingRect(0.02 * width, 0.02 * height, 0.96 * width, 0.96 * height);
+	dc.DrawRectangle(clippingRect);
+	dc.SetClippingRegion(clippingRect);
+
 	// Function + min/max values
 	std::function<double(double)> f;
 	switch (_config->getFunction()) {
@@ -71,6 +76,8 @@ void Plot::draw(wxDC& dc, int width, int height) {
 		};
 
 
+
+	dc.SetPen(*wxBLACK_PEN);
 	// X axis
 	display(Line(_config->getXStart(), 0, _config->getXEnd(), 0));
 
