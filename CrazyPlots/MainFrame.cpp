@@ -13,6 +13,81 @@ void MainFrame::AddRow(wxBoxSizer* sizer, const wxString& label1,
 	sizer->Add(hbox, 0, wxEXPAND);
 }
 
+void MainFrame::displayConfig() {
+	_x0Control->SetValue(std::format("{:.2}", _config->getX0()));
+	_y0Control->SetValue(std::format("{:.2}", _config->getY0()));
+	_x1Control->SetValue(std::format("{:.2}", _config->getX1()));
+	_y1Control->SetValue(std::format("{:.2}", _config->getY1()));
+
+	_xTransControl->SetValue(std::format("{:.2}", _config->getXTrans()));
+	_yTransControl->SetValue(std::format("{:.2}", _config->getYTrans()));
+
+	_xStartControl->SetValue(std::format("{:.2}", _config->getXStart()));
+	_xEndControl->SetValue(std::format("{:.2}", _config->getXEnd()));
+
+	_rotationControl->SetScrollPos(1, static_cast<int>(_config->getAlpha()));
+	_rotationLabel->SetLabelText(std::format("{:.2}", _config->getAlpha()));
+
+	if (_config->getRotationOrigin() == Config::Origin::SCREEN) {
+		_screenCenterControl->SetValue(true);
+		_worldCenterControl->SetValue(false);
+	}
+	else {
+		_screenCenterControl->SetValue(false);
+		_worldCenterControl->SetValue(true);
+	}
+
+	_functionControl->SetSelection(_config->getFunction());
+
+}
+
+double MainFrame::stringToDouble(const wxString& str) {
+	if (str.empty() || str == "-") {
+		// Return a default value or handle the empty case appropriately
+		return 0.0; // Default value (you may choose a different default)
+	}
+	else {
+		double value;
+		if (str.ToDouble(&value)) {
+			return value;
+		}
+		else {
+			// Error handling if the conversion fails
+			std::cerr << "Error: Conversion failed for string: " << str << std::endl;
+			return 0.0; // Default value or handle the error case appropriately
+		}
+	}
+}
+
+void MainFrame::updateConfig() {
+	// Text boxes
+	_config->setX0(stringToDouble(_x0Control->GetValue()));
+	_config->setY0(stringToDouble(_y0Control->GetValue()));
+	_config->setX1(stringToDouble(_x1Control->GetValue()));
+	_config->setY1(stringToDouble(_y1Control->GetValue()));
+
+	_config->setXTrans(stringToDouble(_xTransControl->GetValue()));
+	_config->setYTrans(stringToDouble(_yTransControl->GetValue()));
+
+	_config->setXStart(stringToDouble(_xStartControl->GetValue()));
+	_config->setXEnd(stringToDouble(_xEndControl->GetValue()));
+
+	// Alpha
+	_config->setAlpha(_rotationControl->GetThumbPosition());
+	_rotationLabel->SetLabelText(std::format("{:.0f}", _config->getAlpha()));
+
+	// Origin
+	if (_screenCenterControl->GetValue()) {
+		_config->setRotationOrigin(Config::Origin::SCREEN);
+	}
+	else {
+		_config->setRotationOrigin(Config::Origin::WORLD);
+	}
+
+	// Function
+	_config->setFunction(_functionControl->GetSelection());
+}
+
 MainFrame::MainFrame(std::shared_ptr<Config> config)
 	: wxFrame(NULL, wxID_ANY, "CrazyPlots"), _config(config) {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
@@ -112,7 +187,27 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 
 	displayConfig();
 
-	_canvas->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::repaintEventHandler), NULL, this);
+	// Events
+	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent& event) { repaint(); });
+
+	_x0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_y0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_x1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_y1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_xTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_yTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_xStartControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_xEndControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent&) { updateConfig(); });
+	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
+	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
+	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { updateConfig(); });
+	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
+	_saveControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
+	_loadControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { updateConfig(); });
+
+
+
 }
 
 
@@ -127,8 +222,4 @@ void MainFrame::repaint() {
 	int w, h;
 	_canvas->GetSize(&w, &h);
 	plt.draw(dc, w, h);
-}
-
-MainFrame::~MainFrame() {
-	_canvas->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MainFrame::repaintEventHandler), NULL, this);
 }
