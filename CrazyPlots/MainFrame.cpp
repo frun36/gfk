@@ -87,6 +87,7 @@ void MainFrame::updateConfig() {
 	// Function
 	_config->setFunction(_functionControl->GetSelection());
 
+	repaint();
 	Refresh();
 }
 
@@ -189,6 +190,8 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 
 	displayConfig();
 
+	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
+
 	// Events
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent& event) { repaint(); });
 
@@ -201,15 +204,15 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_xStartControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
 	_xEndControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
 
-	/*_rotationControl->Bind(wxEVT_SCROLL_TOP, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_TOP, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_BOTTOM, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_LINEUP, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_LINEDOWN, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_PAGEUP, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_PAGEDOWN, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_THUMBTRACK, [this](wxScrollEvent&) { updateConfig(); });
-	_rotationControl->Bind(wxEVT_SCROLL_THUMBRELEASE, [this](wxScrollEvent&) { updateConfig(); });*/
-	_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent& event) { if (!_blockEvents) updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_THUMBRELEASE, [this](wxScrollEvent&) { updateConfig(); });
+	//_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent& event) { if (!_blockEvents) updateConfig(); });
 
 	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
 	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
