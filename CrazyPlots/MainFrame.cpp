@@ -14,16 +14,17 @@ void MainFrame::AddRow(wxBoxSizer* sizer, const wxString& label1,
 }
 
 void MainFrame::displayConfig() {
-	_x0Control->SetValue(std::format("{:.2}", _config->getX0()));
-	_y0Control->SetValue(std::format("{:.2}", _config->getY0()));
-	_x1Control->SetValue(std::format("{:.2}", _config->getX1()));
-	_y1Control->SetValue(std::format("{:.2}", _config->getY1()));
+	_blockEvents = true;
+	_x0Control->ChangeValue(std::format("{:.2}", _config->getX0()));
+	_y0Control->ChangeValue(std::format("{:.2}", _config->getY0()));
+	_x1Control->ChangeValue(std::format("{:.2}", _config->getX1()));
+	_y1Control->ChangeValue(std::format("{:.2}", _config->getY1()));
 
-	_xTransControl->SetValue(std::format("{:.2}", _config->getXTrans()));
-	_yTransControl->SetValue(std::format("{:.2}", _config->getYTrans()));
+	_xTransControl->ChangeValue(std::format("{:.2}", _config->getXTrans()));
+	_yTransControl->ChangeValue(std::format("{:.2}", _config->getYTrans()));
 
-	_xStartControl->SetValue(std::format("{:.2}", _config->getXStart()));
-	_xEndControl->SetValue(std::format("{:.2}", _config->getXEnd()));
+	_xStartControl->ChangeValue(std::format("{:.2}", _config->getXStart()));
+	_xEndControl->ChangeValue(std::format("{:.2}", _config->getXEnd()));
 
 	_rotationControl->SetScrollPos(1, static_cast<int>(_config->getAlpha()));
 	_rotationLabel->SetLabelText(std::format("{:.2}", _config->getAlpha()));
@@ -38,6 +39,8 @@ void MainFrame::displayConfig() {
 	}
 
 	_functionControl->SetSelection(_config->getFunction());
+
+	_blockEvents = false;
 
 	Refresh();
 }
@@ -189,14 +192,14 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	// Events
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent& event) { repaint(); });
 
-	_x0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_y0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_x1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_y1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_xTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_yTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_xStartControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
-	_xEndControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { updateConfig(); });
+	_x0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if(!_blockEvents) updateConfig(); });
+	_y0Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_x1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_y1Control->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_xTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_yTransControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_xStartControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_xEndControl->Bind(wxEVT_TEXT, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
 
 	/*_rotationControl->Bind(wxEVT_SCROLL_TOP, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_BOTTOM, [this](wxScrollEvent&) { updateConfig(); });
@@ -206,11 +209,11 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 	_rotationControl->Bind(wxEVT_SCROLL_PAGEDOWN, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_THUMBTRACK, [this](wxScrollEvent&) { updateConfig(); });
 	_rotationControl->Bind(wxEVT_SCROLL_THUMBRELEASE, [this](wxScrollEvent&) { updateConfig(); });*/
-	_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent&) { updateConfig(); });
+	_rotationControl->Bind(wxEVT_SCROLL_CHANGED, [this](wxScrollEvent& event) { if (!_blockEvents) updateConfig(); });
 
-	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
-	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { updateConfig(); });
-	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { updateConfig(); });
+	_screenCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_worldCenterControl->Bind(wxEVT_RADIOBUTTON, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
+	_functionControl->Bind(wxEVT_CHOICE, [this](wxCommandEvent&) { if (!_blockEvents) updateConfig(); });
 	_centerControl->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		_x0Control->SetLabelText(_xStartControl->GetLineText(0));
 		_x1Control->SetLabelText(_xEndControl->GetLineText(0));
@@ -239,7 +242,6 @@ MainFrame::MainFrame(std::shared_ptr<Config> config)
 		_config->load(path.ToStdString());
 
 		displayConfig();
-		repaint();
 		});
 }
 

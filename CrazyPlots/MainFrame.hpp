@@ -21,6 +21,8 @@ private:
 	wxButton* _saveControl, * _loadControl, * _centerControl;
 	wxStaticText* _yMinLabel, * _yMaxLabel, * _rotationLabel;
 
+	bool _blockEvents = false;
+
 	void AddRow(wxBoxSizer* sizer,
 		const wxString& label1, wxWindow* ctrl1,
 		const wxString& label2 = "", wxWindow* ctrl2 = nullptr);
