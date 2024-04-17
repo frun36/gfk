@@ -1,4 +1,4 @@
-#include "transform.hpp"
+#include "Transform.hpp"
 
 #include <cmath>
 
@@ -6,21 +6,21 @@ Vector4::Vector4(double x, double y, double z) {
 	_data[0] = x; _data[1] = y; _data[2] = z; _data[3] = 1.0;
 }
 
-Vector4 Vector4::operator-(const Vector4& other) {
-	unsigned int i;
-	Vector4 Result;
-	for (i = 0; i < 4; i++) Result._data[i] = _data[i] - other._data[i];
-	return Result;
+Vector4 Vector4::projected(double d) const {
+	/*return Vector4(
+		_data[0] * d / _data[2],
+		_data[1] * d / _data[2],
+		d
+	);*/
+
+	return Vector4(
+		_data[0] * 500,
+		_data[1] * 500,
+		0
+	);
 }
 
-Vector4 operator*(double a, const Vector4& v) {
-	unsigned int i;
-	Vector4 Result;
-	for (i = 0; i < 4; i++) Result._data[i] = v._data[i] * a;
-	return Result;
-}
-
-Matrix4 Matrix4::operator*(const Matrix4& m) {
+Matrix4 Matrix4::operator*(const Matrix4& m) const {
 	int i, j, k;
 	Matrix4 tmp;
 
@@ -100,7 +100,7 @@ Matrix4 Matrix4::scale(double x, double y, double z) const {
 	return m * *this;
 }
 
-Vector4 Matrix4::operator*(const Vector4& v) {
+Vector4 Matrix4::operator*(const Vector4& v) const {
 	unsigned int i, j;
 	Vector4 tmp;
 

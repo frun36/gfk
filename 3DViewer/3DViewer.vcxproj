@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Geometry.hpp" />
+    <ClInclude Include="Line.hpp" />
     <ClInclude Include="MainFrame.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="Transform.hpp" />

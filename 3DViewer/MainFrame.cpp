@@ -54,13 +54,14 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "3DViewer"), _config(), _model(
 	_reset->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		_config.reset();
 		_displayConfig();
+		_canvas->Refresh();
 		});
 
 	this->SetSizer(mainSizer);
 	this->Layout();
 	this->Centre(wxBOTH);
 
-	_canvas->Bind(wxEVT_PAINT, [this](wxPaintEvent&) {
+	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) {
 		wxClientDC dc1(_canvas);
 		wxBufferedDC dc(&dc1);
 
@@ -89,41 +90,21 @@ void MainFrame::_addSliderWithLabelAndValue(wxBoxSizer* sizer, const wxString& l
 	valueText->SetMinSize(wxSize(64, -1));
 	rowSizer->Add(valueText, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	(*slider)->Bind(wxEVT_SCROLL_TOP, [this, scrollHandler, valueText](wxScrollEvent& e) {
+	auto eventHandler = [this, scrollHandler, valueText](wxScrollEvent& e) {
 		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
+		_updateConfig();
+		_canvas->Refresh(); 
+		};
 
-	(*slider)->Bind(wxEVT_SCROLL_BOTTOM, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_LINEUP, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_LINEDOWN, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_PAGEUP, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_PAGEDOWN, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_THUMBTRACK, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_THUMBRELEASE, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
-
-	(*slider)->Bind(wxEVT_SCROLL_CHANGED, [this, scrollHandler, valueText](wxScrollEvent& e) {
-		valueText->SetLabelText(wxString::Format("%.2f", scrollHandler(e)));
-		});
+	(*slider)->Bind(wxEVT_SCROLL_TOP, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_BOTTOM, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_LINEUP, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_LINEDOWN, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_PAGEUP, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_PAGEDOWN, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_THUMBTRACK, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_THUMBRELEASE, eventHandler);
+	(*slider)->Bind(wxEVT_SCROLL_CHANGED, eventHandler);
 
 	sizer->Add(rowSizer, 0, wxEXPAND | wxALL, 5);
 }
@@ -134,15 +115,13 @@ void MainFrame::_uploadImage() {
 	if (WxOpenFileDialog.ShowModal() == wxID_OK)
 	{
 		double x1, y1, z1, x2, y2, z2;
-		int r, g, b;
+		unsigned r, g, b;
 
 		Mesh mesh;
 
 		std::ifstream in(WxOpenFileDialog.GetPath().ToAscii());
-		if (in.is_open())
-		{
-			while (!in.eof())
-			{
+		if (in.is_open()) {
+			while (!in.eof()) {
 				in >> x1 >> y1 >> z1 >> x2 >> y2 >> z2 >> r >> g >> b;
 				mesh.addSegment(Segment(Point(x1, y1, z1), Point(x2, y2, z2), Color(r, g, b)));
 			}
@@ -151,4 +130,6 @@ void MainFrame::_uploadImage() {
 			_model.setMesh(std::move(mesh));
 		}
 	}
+
+	_canvas->Refresh();
 }
