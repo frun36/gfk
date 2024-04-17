@@ -61,6 +61,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "3DViewer"), _config(), _model(
 	this->Layout();
 	this->Centre(wxBOTH);
 
+	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
+
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) {
 		wxClientDC dc1(_canvas);
 		wxBufferedDC dc(&dc1);

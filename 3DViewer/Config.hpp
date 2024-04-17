@@ -12,9 +12,9 @@ public:
 	void setTransZ(double transZ) { _transZ = transZ; }
 
 	// Setters for rotation variables
-	void setRotX(double rotX) { _rotX = rotX * M_PI / 180; }
-	void setRotY(double rotY) { _rotY = rotY * M_PI / 180; }
-	void setRotZ(double rotZ) { _rotZ = rotZ * M_PI / 180; }
+	void setRotX(double rotX) { _rotX = -rotX * M_PI / 180; }
+	void setRotY(double rotY) { _rotY = -rotY * M_PI / 180; }
+	void setRotZ(double rotZ) { _rotZ = -rotZ * M_PI / 180; }
 
 	// Setters for scale variables
 	void setScaleX(double scaleX) { _scaleX = scaleX; }

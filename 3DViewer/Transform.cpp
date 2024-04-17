@@ -7,17 +7,17 @@ Vector4::Vector4(double x, double y, double z) {
 }
 
 Vector4 Vector4::projected(double d) const {
-	/*return Vector4(
-		_data[0] * d / _data[2],
-		_data[1] * d / _data[2],
-		d
-	);*/
-
 	return Vector4(
+		_data[0] * d / (_data[2] + d) * 500,
+		_data[1] * d / (_data[2] + d) * 500,
+		0
+	);
+
+	/*return Vector4(
 		_data[0] * 500,
 		_data[1] * 500,
 		0
-	);
+	);*/
 }
 
 Matrix4 Matrix4::operator*(const Matrix4& m) const {
