@@ -20,8 +20,6 @@ Vector4 operator*(double a, const Vector4& v) {
 	return Result;
 }
 
-Matrix4::Matrix4() { }
-
 Matrix4 Matrix4::operator*(const Matrix4& m) {
 	int i, j, k;
 	Matrix4 tmp;

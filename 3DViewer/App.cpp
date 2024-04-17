@@ -1,6 +1,7 @@
 #include <wx/wx.h>
 
 #include "MainFrame.hpp"
+#include "Config.hpp"
 
 #include <memory>
 

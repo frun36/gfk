@@ -4,8 +4,8 @@ class Vector4;
 
 class Matrix4 {
 private:
-	Matrix4();
-	double _data[4][4];
+	Matrix4() {};
+	double _data[4][4] = {};
 public:
 	Matrix4 operator*(const Matrix4& other);
 	Vector4 operator*(const Vector4& v);
