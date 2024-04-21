@@ -179,5 +179,10 @@ wxImage MainFrame::_prewitt(wxImage& img) {
 
 wxImage MainFrame::_thresh(wxImage& img, unsigned char thresh) {
 	wxImage newImg = img.Copy();
+	unsigned char * data = newImg.GetData();
+
+	for (size_t i = 0; i < static_cast<size_t>(3) * newImg.GetWidth() * newImg.GetHeight(); i++)
+		data[i] = data[i] > thresh ? 255 : 0;
+
 	return newImg;
 }
