@@ -17,7 +17,17 @@ private:
 
 	wxSlider* _sliderBrightness, * _sliderContrast;
 
+	void _repaint();
+
+	static wxImage _brightness(wxImage& img, int brightness);
+	static wxImage _contrast(wxImage& img, int contrast);
+
+	static wxImage _prewitt(wxImage& img);
+	static wxImage _thresh(wxImage& img, unsigned char thresh);
+
 public:
+	wxImage imgOrg, imgMod, imgMask;
+
 	MainFrame();
 };
 

@@ -6,8 +6,10 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	// Create the left side of the frame for the canvas
-	_canvas = new wxScrolledWindow(this, wxID_ANY);
-	_canvas->SetMinSize(wxSize(400, 600)); // Adjust the size as needed
+	_canvas = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	_canvas->SetScrollRate(5, 5);
+	_canvas->SetScrollbars(25, 25, 52, 40);
+	_canvas->SetBackgroundColour(wxColor(0, 0, 0));
 	mainSizer->Add(_canvas, 1, wxEXPAND | wxALL, 5);
 
 	// Create the right side of the frame for the menu
@@ -54,9 +56,128 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	menuSizer->Add(_buttonPrewitt, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_buttonThresh, 0, wxEXPAND | wxALL, 5);
 
-	// Add the menuSizer to the mainSizer
+	
 	mainSizer->Add(menuSizer, 0, wxEXPAND | wxALL, 5);
-
-	// Set the main sizer for the frame
 	SetSizer(mainSizer);
+
+	// Events
+	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint();  });
+
+	_buttonDefault->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy();
+		_canvas->Refresh();
+		});
+
+	_buttonGrayscale->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.ConvertToGreyscale();
+		_canvas->Refresh();
+		});
+
+	_buttonBlur->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Blur(5);
+		_canvas->Refresh();
+		});
+
+	_buttonMirror->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Mirror();
+		_canvas->Refresh();
+		});
+
+	_buttonReplace->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy();
+		imgMod.Replace(254, 0, 0, 0, 0, 255);
+		_canvas->Refresh();
+		});
+
+	_buttonRescale->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy().Rescale(320, 240 * 0.25);
+		_canvas->Refresh();
+		});
+
+	_buttonRotate->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Rotate(M_PI / 6, wxPoint(imgOrg.GetWidth() * 0.5, imgOrg.GetHeight() * 0.5));
+		_canvas->Refresh();
+		});
+
+	_buttonRotateHue->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy();
+		imgMod.RotateHue(0.5);
+		_canvas->Refresh();
+		});
+
+	_buttonMask->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy();
+		imgMod.SetMaskFromImage(imgMask, 0, 0, 0);
+		_canvas->Refresh();
+		});
+
+	auto brightness = [this](wxScrollEvent& event) {
+		imgMod = _brightness(imgOrg, event.GetPosition());
+		_canvas->Refresh();
+		};
+
+	_sliderBrightness->Bind(wxEVT_SCROLL_TOP, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_BOTTOM, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_LINEUP, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_LINEDOWN, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_PAGEUP, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_PAGEDOWN, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_THUMBTRACK, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_THUMBRELEASE, brightness);
+	_sliderBrightness->Bind(wxEVT_SCROLL_CHANGED, brightness);
+
+
+	auto contrast = [this](wxScrollEvent& event) {
+		imgMod = _contrast(imgOrg, event.GetPosition());
+		_canvas->Refresh();
+		};
+
+	_sliderContrast->Bind(wxEVT_SCROLL_TOP, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_BOTTOM, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_LINEUP, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_LINEDOWN, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_PAGEUP, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_PAGEDOWN, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_THUMBTRACK, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_THUMBRELEASE, contrast);
+	_sliderContrast->Bind(wxEVT_SCROLL_CHANGED, contrast);
+
+
+	_buttonPrewitt->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = _prewitt(imgOrg);
+		_canvas->Refresh();
+		});
+
+	_buttonThresh->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = _thresh(imgOrg, 128);
+		_canvas->Refresh();
+		});
+
+}
+
+void MainFrame::_repaint() {
+	wxBitmap bitmap(imgMod);
+	wxClientDC dc(_canvas);
+	_canvas->DoPrepareDC(dc);
+	dc.DrawBitmap(bitmap, 0, 0, true);
+}
+
+wxImage MainFrame::_brightness(wxImage& img, int brightness) {
+	wxImage newImg = img.Copy();
+	return newImg;
+}
+
+wxImage MainFrame::_contrast(wxImage& img, int contrast) {
+	wxImage newImg = img.Copy();
+	return newImg;
+}
+
+wxImage MainFrame::_prewitt(wxImage& img) {
+	wxImage newImg = img.Copy();
+	return newImg;
+}
+
+wxImage MainFrame::_thresh(wxImage& img, unsigned char thresh) {
+	wxImage newImg = img.Copy();
+	return newImg;
 }
