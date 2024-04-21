@@ -18,7 +18,7 @@ private:
 
 	void _repaint();
 
-	static wxImage _brightness(wxImage& img, int brightness);
+	static wxImage _brightness(wxImage& img, float brightness);
 	static wxImage _contrast(wxImage& img, int contrast);
 
 	static wxImage _prewitt(wxImage& img);
