@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyPlots", "CrazyPlots\Cr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DViewer", "3DViewer\3DViewer.vcxproj", "{27314281-416B-4A07-A12C-195D6407AC0C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyImage", "CrazyImage\CrazyImage.vcxproj", "{9589C993-5425-4097-ADB0-1A1A46E9F716}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{27314281-416B-4A07-A12C-195D6407AC0C}.Release|x64.Build.0 = Release|x64
 		{27314281-416B-4A07-A12C-195D6407AC0C}.Release|x86.ActiveCfg = Release|Win32
 		{27314281-416B-4A07-A12C-195D6407AC0C}.Release|x86.Build.0 = Release|Win32
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Debug|x64.ActiveCfg = Debug|x64
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Debug|x64.Build.0 = Debug|x64
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Debug|x86.ActiveCfg = Debug|Win32
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Debug|x86.Build.0 = Debug|Win32
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Release|x64.ActiveCfg = Release|x64
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Release|x64.Build.0 = Release|x64
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Release|x86.ActiveCfg = Release|Win32
+		{9589C993-5425-4097-ADB0-1A1A46E9F716}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
