@@ -1,11 +1,10 @@
 #pragma once
 
 #include <wx/wx.h>
-#include "Config.hpp"
+#include "Color.hpp"
 
 class MainFrame : public wxFrame {
 private:
-	Config _config;
 	wxScrolledWindow* _canvas;
 
 	wxButton* _buttonDefault,
@@ -24,6 +23,8 @@ private:
 
 	static wxImage _prewitt(wxImage& img);
 	static wxImage _thresh(wxImage& img, unsigned char thresh);
+
+	static Color _applyVerticalMask(Color mask[3][3]);
 
 public:
 	wxImage imgOrg, imgMod, imgMask;

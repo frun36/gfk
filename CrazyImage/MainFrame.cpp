@@ -1,6 +1,5 @@
 #include "MainFrame.hpp"
 
-
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition, wxSize(1200, 800)) {
 	// Create the main sizer for the frame
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -56,7 +55,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	menuSizer->Add(_buttonPrewitt, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_buttonThresh, 0, wxEXPAND | wxALL, 5);
 
-	
+
 	mainSizer->Add(menuSizer, 0, wxEXPAND | wxALL, 5);
 	SetSizer(mainSizer);
 
@@ -174,15 +173,55 @@ wxImage MainFrame::_contrast(wxImage& img, int contrast) {
 
 wxImage MainFrame::_prewitt(wxImage& img) {
 	wxImage newImg = img.Copy();
+
+	unsigned char* originalData = img.GetData();
+	unsigned char* data = newImg.GetData();
+
+	size_t x = img.GetWidth();
+	size_t y = img.GetHeight();
+
+	Color mask[3][3];
+	Color result;
+
+	for (size_t i = x + 1; i < x * (y - 1); i++) {
+		if (i % x == 0 || i % x == x - 1)
+			continue;
+
+		mask[0][0] = Color::fromRGB(originalData[3 * (i - x - 1)], originalData[3 * (i - x - 1)] + 1, originalData[3 * (i - x - 1)] + 2);
+		mask[0][1] = Color::fromRGB(originalData[3 * (i - x)], originalData[3 * (i - x)] + 1, originalData[3 * (i - x)] + 2);
+		mask[0][2] = Color::fromRGB(originalData[3 * (i - x + 1)], originalData[3 * (i - x + 1)] + 1, originalData[3 * (i - x + 1)] + 2);
+
+		mask[1][0] = Color::fromRGB(originalData[3 * (i - 1)], originalData[3 * (i - 1)] + 1, originalData[3 * (i - 1)] + 2);
+		mask[1][1] = Color::fromRGB(originalData[3 * (i)], originalData[3 * (i)] + 1, originalData[3 * (i)] + 2);
+		mask[1][2] = Color::fromRGB(originalData[3 * (i + 1)], originalData[3 * (i + 1)] + 1, originalData[3 * (i + 1)] + 2);
+
+		mask[2][0] = Color::fromRGB(originalData[3 * (i + x - 1)], originalData[3 * (i + x - 1)] + 1, originalData[3 * (i + x - 1)] + 2);
+		mask[2][1] = Color::fromRGB(originalData[3 * (i + x)], originalData[3 * (i + x)] + 1, originalData[3 * (i + x)] + 2);
+		mask[2][2] = Color::fromRGB(originalData[3 * (i + x + 1)], originalData[3 * (i + x + 1)] + 1, originalData[3 * (i + x + 1)] + 2);
+
+
+		result = _applyVerticalMask(mask);
+
+		data[3 * i] = result.r;
+		data[3 * i + 1] = result.g;
+		data[3 * i + 2] = result.b;
+	}
+
 	return newImg;
 }
 
 wxImage MainFrame::_thresh(wxImage& img, unsigned char thresh) {
 	wxImage newImg = img.Copy();
-	unsigned char * data = newImg.GetData();
+	unsigned char* data = newImg.GetData();
 
 	for (size_t i = 0; i < static_cast<size_t>(3) * newImg.GetWidth() * newImg.GetHeight(); i++)
 		data[i] = data[i] > thresh ? 255 : 0;
 
 	return newImg;
+}
+
+Color MainFrame::_applyVerticalMask(Color mask[3][3]) {
+	Color color;
+	color = color - mask[0][0] - mask[1][0] - mask[2][0] + mask[0][2] + mask[1][2] + mask[2][2];
+	return color.normalized();
 }

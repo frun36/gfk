@@ -1,8 +1,6 @@
 #include <wx/wx.h>
 
 #include "MainFrame.hpp"
-#include "Config.hpp"
-
 class App : public wxApp {
 public:
 	bool OnInit() {
