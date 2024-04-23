@@ -176,7 +176,20 @@ wxImage MainFrame::_brightness(wxImage& img, int brightness) {
 }
 
 wxImage MainFrame::_contrast(wxImage& img, int contrast) {
+	float c = (100.0 + static_cast<float>(contrast)) / (101.0 - static_cast<float>(contrast));
+	float val;
+
 	wxImage newImg = img.Copy();
+	unsigned char* data = newImg.GetData();
+
+	for (size_t i = 0; i < 3 * static_cast<size_t>(newImg.GetWidth()) * newImg.GetHeight(); i++) {
+		val = (data[i] - 127) * c + 127;
+
+		if (val > 255) data[i] = 255;
+		else if (val < 0) data[i] = 0;
+		else data[i] = static_cast<unsigned char>(val);
+	}
+
 	return newImg;
 }
 
