@@ -202,31 +202,23 @@ wxImage MainFrame::_prewitt(wxImage& img) {
 	size_t x = img.GetWidth();
 	size_t y = img.GetHeight();
 
-	Color mask[3][3];
-	Color result;
+	int tmp = 0;
 
-	for (size_t i = x + 1; i < x * (y - 1); i++) {
-		if (i % x == 0 || i % x == x - 1)
-			continue;
+	for (size_t i = 1; i < y - 1; i++) {
+		for (size_t j = 1; j < x - 1; j++) {
+			for (size_t k = 0; k < 3; k++) {
+				tmp = 0;
 
-		mask[0][0] = Color::fromRGB(originalData[3 * (i - x - 1)], originalData[3 * (i - x - 1)] + 1, originalData[3 * (i - x - 1)] + 2);
-		mask[0][1] = Color::fromRGB(originalData[3 * (i - x)], originalData[3 * (i - x)] + 1, originalData[3 * (i - x)] + 2);
-		mask[0][2] = Color::fromRGB(originalData[3 * (i - x + 1)], originalData[3 * (i - x + 1)] + 1, originalData[3 * (i - x + 1)] + 2);
+				tmp -= originalData[3 * ((i - 1) * x + j - 1) + k];
+				tmp += originalData[3 * ((i - 1) * x + j + 1) + k];
+				tmp -= originalData[3 * (i * x + j - 1) + k];
+				tmp += originalData[3 * (i * x + j + 1) + k];
+				tmp -= originalData[3 * ((i + 1) * x + j - 1) + k];
+				tmp += originalData[3 * ((i + 1) * x + j + 1) + k];
 
-		mask[1][0] = Color::fromRGB(originalData[3 * (i - 1)], originalData[3 * (i - 1)] + 1, originalData[3 * (i - 1)] + 2);
-		mask[1][1] = Color::fromRGB(originalData[3 * (i)], originalData[3 * (i)] + 1, originalData[3 * (i)] + 2);
-		mask[1][2] = Color::fromRGB(originalData[3 * (i + 1)], originalData[3 * (i + 1)] + 1, originalData[3 * (i + 1)] + 2);
-
-		mask[2][0] = Color::fromRGB(originalData[3 * (i + x - 1)], originalData[3 * (i + x - 1)] + 1, originalData[3 * (i + x - 1)] + 2);
-		mask[2][1] = Color::fromRGB(originalData[3 * (i + x)], originalData[3 * (i + x)] + 1, originalData[3 * (i + x)] + 2);
-		mask[2][2] = Color::fromRGB(originalData[3 * (i + x + 1)], originalData[3 * (i + x + 1)] + 1, originalData[3 * (i + x + 1)] + 2);
-
-
-		result = _applyVerticalMask(mask);
-
-		data[3 * i] = result.r;
-		data[3 * i + 1] = result.g;
-		data[3 * i + 2] = result.b;
+				data[3 * (i * x + j) + k] = abs(tmp) / 3.0;
+			}
+		}
 	}
 
 	return newImg;
@@ -240,10 +232,4 @@ wxImage MainFrame::_thresh(wxImage& img, unsigned char thresh) {
 		data[i] = data[i] > thresh ? 255 : 0;
 
 	return newImg;
-}
-
-Color MainFrame::_applyVerticalMask(Color mask[3][3]) {
-	Color color;
-	color = color - mask[0][0] - mask[1][0] - mask[2][0] + mask[0][2] + mask[1][2] + mask[2][2];
-	return color.normalized();
 }
