@@ -89,7 +89,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 		});
 
 	_buttonRescale->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		imgMod = imgOrg.Copy().Rescale(320, 240 * 0.25);
+		imgMod = imgOrg.Copy().Rescale(320, 240);
 		_canvas->Refresh();
 		});
 
@@ -111,7 +111,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 		});
 
 	auto brightness = [this](wxScrollEvent& event) {
-		imgMod = _brightness(imgOrg, static_cast<float>(event.GetPosition()) / 100);
+		imgMod = _brightness(imgOrg, event.GetPosition());
 		_canvas->Refresh();
 		};
 
@@ -161,38 +161,15 @@ void MainFrame::_repaint() {
 	dc.DrawBitmap(bitmap, 0, 0, true);
 }
 
-wxImage MainFrame::_brightness(wxImage& img, float brightness) {
+wxImage MainFrame::_brightness(wxImage& img, int brightness) {
 	wxImage newImg = img.Copy();
 
 	unsigned char* data = newImg.GetData();
 
-	Color currColor, newColor;
-	unsigned char value;
-
-	for (size_t i = 0; i < static_cast<size_t>(newImg.GetWidth()) * newImg.GetHeight(); i++) {
-		currColor = Color::fromRGB(data[3 * i], data[3 * i + 1], data[3 * i + 2]);
-		//currColor = Color::fromHSL(0.1, 1, 0.5);
-		//h = currColor.getH();
-		//s = currColor.getS();
-		//l = currColor.getL();
-		//l += brightness;
-		//if (l > 1) l = 1;
-		//if (l < 0) l = 0;
-		///*h = 0.5;
-		//s = (brightness + 1) / 2;
-		//l = 0.5;*/
-		if (brightness > 0) {
-			value = 255 * brightness;
-			newColor = (currColor + Color::fromRGB(value, value, value)).normalized();
-		}
-		else {
-			value = -255 * brightness;
-			newColor = (currColor - Color::fromRGB(value, value, value)).normalized();
-		}
-
-		data[3 * i] = newColor.r;
-		data[3 * i + 1] = newColor.g;
-		data[3 * i + 2] = newColor.b;
+	for (size_t i = 0; i < 3 * static_cast<size_t>(newImg.GetWidth()) * newImg.GetHeight(); i++) {
+		if (255 - data[i] < brightness) data[i] = 255;
+		else if (data[i] < -brightness) data[i] = 0;
+		else data[i] = data[i] + brightness;
 	}
 
 	return newImg;
