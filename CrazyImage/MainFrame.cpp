@@ -65,6 +65,8 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	_buttonDefault->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
 		imgMod = imgOrg.Copy();
 		_canvas->Refresh();
+		_sliderBrightness->SetValue(0);
+		_sliderContrast->SetValue(0);
 		});
 
 	_buttonGrayscale->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
