@@ -29,6 +29,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	_buttonMask = new wxButton(this, wxID_ANY, "Mask");
 	_buttonPrewitt = new wxButton(this, wxID_ANY, "Prewitt");
 	_buttonThresh = new wxButton(this, wxID_ANY, "Thresh");
+	_buttonExtra = new wxButton(this, wxID_ANY, "Extra");
 
 	gridSizer->Add(_buttonGrayscale, 0, wxEXPAND | wxALL, 5);
 	gridSizer->Add(_buttonBlur, 0, wxEXPAND | wxALL, 5);
@@ -54,6 +55,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	// Add the remaining buttons to the menu
 	menuSizer->Add(_buttonPrewitt, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_buttonThresh, 0, wxEXPAND | wxALL, 5);
+	menuSizer->Add(_buttonExtra, 0, wxEXPAND | wxALL, 5);
 
 
 	mainSizer->Add(menuSizer, 0, wxEXPAND | wxALL, 5);
@@ -154,6 +156,24 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 		_canvas->Refresh();
 		});
 
+	_buttonExtra->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		imgMod = imgOrg.Copy();
+		unsigned char* data = imgMod.GetData();
+		float r, g, b, new_r, new_g, new_b;
+		for (size_t i = 0; i < imgMod.GetWidth() * imgMod.GetHeight(); i++) {
+			r = data[3 * i] / 255.f;
+			g = data[3 * i + 1] / 255.f;
+			b = data[3 * i + 2] / 255.f;
+
+			new_r = 0.5 * sin(2 * M_PI * r) + 0.5;
+			new_g = 0.25 * (sin(2 * M_PI * g) + cos(2 * M_PI * r) + 2);
+			new_b = 0.5 * cos(2 * M_PI * b) + 0.5;
+
+			data[3 * i] = static_cast<unsigned char>(255 * new_r);
+			data[3 * i + 1] = static_cast<unsigned char>(255 * new_g);
+			data[3 * i + 2] = static_cast<unsigned char>(255 * new_b);
+		}
+		});
 }
 
 void MainFrame::_repaint() {

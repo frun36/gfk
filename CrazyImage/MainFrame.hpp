@@ -11,7 +11,8 @@ private:
 		* _buttonMirror, * _buttonReplace,
 		* _buttonRescale, * _buttonRotate,
 		* _buttonRotateHue, * _buttonMask,
-		* _buttonPrewitt, * _buttonThresh;
+		* _buttonPrewitt, * _buttonThresh,
+		* _buttonExtra;
 
 	wxSlider* _sliderBrightness, * _sliderContrast;
 
