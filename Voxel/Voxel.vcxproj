@@ -130,10 +130,12 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Config.hpp" />
     <ClCompile Include="MainFrame.cpp" />
+    <ClCompile Include="Plot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Linalg.hpp" />
     <ClInclude Include="MainFrame.hpp" />
+    <ClInclude Include="Plot.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

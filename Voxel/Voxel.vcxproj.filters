@@ -24,12 +24,18 @@
     <ClCompile Include="Config.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Plot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrame.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Linalg.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Plot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

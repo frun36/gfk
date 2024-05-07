@@ -1,5 +1,6 @@
 #include "MainFrame.hpp"
 #include "Linalg.hpp"
+#include "Plot.hpp"
 #include <wx/dcbuffer.h>
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)), _config() {
@@ -140,43 +141,9 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 }
 
 void MainFrame::_repaint() {
-	auto transform = Matrix::identity()
-		.translate(-250, -250)
-		.scale(0.75, 0.75)
-		.shear(-0.1, 0)
-		.scale(1, (50 + _config.getTilt()) / 200.)
-		.translate(250, 250);
-
 	wxClientDC dc1(_canvas);
 	wxBufferedDC dc(&dc1);
 
-	dc.Clear();
-	dc.SetPen(*wxTRANSPARENT_PEN);
-
-	for (int x = 0; x < 500; x += 10) {
-		for (int y = 0; y < 500; y += 10) {
-			auto p = transform * Vector(x, y);
-			float xFun = (x - 250) * 0.01;
-			float yFun = (y - 250) * 0.01;
-			auto height = 100 * exp(-xFun * xFun - yFun * yFun);
-			wxBrush b;
-			b.SetColour(height, height, height);
-			dc.SetBrush(b);
-			dc.DrawRectangle(p.getX(), p.getY(), 10, -height);
-		}
-	}
-
-	//auto a = transform * Vector(0, 0);
-	//auto b = transform * Vector(499, 0);
-	//auto c = transform * Vector(499, 499);
-	//auto d = transform * Vector(0, 499);
-
-	//wxPointList* points = new wxPointList();
-
-	//points->Append(new wxPoint(a.getX(), a.getY()));
-	//points->Append(new wxPoint(b.getX(), b.getY()));
-	//points->Append(new wxPoint(c.getX(), c.getY()));
-	//points->Append(new wxPoint(d.getX(), d.getY()));
-
-	//dc.DrawPolygon(points);
+	Plot plt(_config, 5);
+	plt.draw(dc);
 }
