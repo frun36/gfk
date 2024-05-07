@@ -2,7 +2,7 @@
 #include "Linalg.hpp"
 #include <wx/dcbuffer.h>
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)) {
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)), _config() {
 	/*this->SetSizeHints(wxDefaultSize, wxSize(530, 650));*/
 
 	wxBoxSizer* bSizer1;
@@ -78,33 +78,33 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	_button1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_function = [](double x, double y) { return x + y;  };
+		_config.setFunction([](double x, double y) { return x + y; });
 		_canvas->Refresh();
 		});
 
 	_button2->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_function = [](double x, double y) { return x + y;  };
+		_config.setFunction([](double x, double y) { return x + y; });
 		_canvas->Refresh();
 		});
 
 	_button3->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_function = [](double x, double y) { return x + y;  };
+		_config.setFunction([](double x, double y) { return x + y; });
 		_canvas->Refresh();
 		});
 
 	_button4->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_function = [](double x, double y) { return x + y;  };
+		_config.setFunction([](double x, double y) { return x + y; });
 		_canvas->Refresh();
 		});
 
 	auto updateRotation = [this](wxScrollEvent& event) {
-		_rotation = event.GetPosition();
-		_stRotation->SetLabelText(wxString::Format("Rotation: %d deg", _rotation));
+		_config.setRotation(event.GetPosition());
+		_stRotation->SetLabelText(wxString::Format("Rotation: %d deg", _config.getRotation()));
 		_canvas->Refresh();
 		};
 
 	auto updateTilt = [this](wxScrollEvent& event) {
-		_tilt = event.GetPosition();
+		_config.setTilt(event.GetPosition());
 		_canvas->Refresh();
 		};
 
@@ -129,7 +129,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 	_sTilt->Bind(wxEVT_SCROLL_CHANGED, updateTilt);
 
 	_cbColor->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& event) {
-		_color = event.IsChecked();
+		_config.setColor(event.IsChecked());
 		_canvas->Refresh();
 		});
 
@@ -144,7 +144,7 @@ void MainFrame::_repaint() {
 		.translate(-250, -250)
 		.scale(0.75, 0.75)
 		.shear(-0.1, 0)
-		.scale(1, (50 + _tilt) / 200.)
+		.scale(1, (50 + _config.getTilt()) / 200.)
 		.translate(250, 250);
 
 	wxClientDC dc1(_canvas);
@@ -158,7 +158,7 @@ void MainFrame::_repaint() {
 			auto p = transform * Vector(x, y);
 			float xFun = (x - 250) * 0.01;
 			float yFun = (y - 250) * 0.01;
-			auto height = 100 * exp(- xFun*xFun - yFun*yFun);
+			auto height = 100 * exp(-xFun * xFun - yFun * yFun);
 			wxBrush b;
 			b.SetColour(height, height, height);
 			dc.SetBrush(b);

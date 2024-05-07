@@ -1,9 +1,12 @@
 #pragma once
 
 #include <wx/wx.h>
+#include "Config.hpp"
 
 class MainFrame : public wxFrame {
 private:
+	Config _config;
+
 	wxPanel* _canvas;
 	wxButton* _button1;
 	wxButton* _button2;
@@ -15,11 +18,6 @@ private:
 	wxSlider* _sTilt;
 
 	void _repaint();
-
-	std::function<double(double, double)> _function;
-	int _rotation = 0;
-	int _tilt = 50;
-	bool _color = false;
 public:
 	MainFrame();
 };
