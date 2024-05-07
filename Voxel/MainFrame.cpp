@@ -1,6 +1,6 @@
 #include "MainFrame.hpp"
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition, wxSize(800, 1200)) {
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(800, 1200)) {
 	this->SetSizeHints(wxDefaultSize, wxSize(530, 650));
 
 	wxBoxSizer* bSizer1;
@@ -72,9 +72,70 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	_sTilt = new wxSlider(this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
 	bSizer1->Add(_sTilt, 0, wxALL | wxEXPAND, 5);
 
+	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint(); });
+
+	_button1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		_function = [](double x, double y) { return x + y;  };
+		_canvas->Refresh();
+		});
+
+	_button2->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		_function = [](double x, double y) { return x + y;  };
+		_canvas->Refresh();
+		});
+
+	_button3->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		_function = [](double x, double y) { return x + y;  };
+		_canvas->Refresh();
+		});
+
+	_button4->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+		_function = [](double x, double y) { return x + y;  };
+		_canvas->Refresh();
+		});
+
+	auto updateRotation = [this](wxScrollEvent& event) {
+		_rotation = event.GetPosition();
+		_stRotation->SetLabelText(wxString::Format("Rotation: %d deg", _rotation));
+		_canvas->Refresh();
+		};
+
+	auto updateTilt = [this](wxScrollEvent& event) {
+		_tilt = event.GetPosition();
+		_canvas->Refresh();
+		};
+
+	_sRotation->Bind(wxEVT_SCROLL_TOP, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_BOTTOM, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_LINEUP, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_LINEDOWN, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_PAGEUP, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_PAGEDOWN, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_THUMBTRACK, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_THUMBRELEASE, updateRotation);
+	_sRotation->Bind(wxEVT_SCROLL_CHANGED, updateRotation);
+
+	_sTilt->Bind(wxEVT_SCROLL_TOP, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_BOTTOM, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_LINEUP, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_LINEDOWN, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_PAGEUP, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_PAGEDOWN, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_THUMBTRACK, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_THUMBRELEASE, updateTilt);
+	_sTilt->Bind(wxEVT_SCROLL_CHANGED, updateTilt);
+
+	_cbColor->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& event) {
+		_color = event.IsChecked();
+		_canvas->Refresh();
+		});
 
 	this->SetSizer(bSizer1);
 	this->Layout();
 
 	this->Centre(wxBOTH);
+}
+
+void MainFrame::_repaint() {
+
 }

@@ -13,6 +13,13 @@ private:
 	wxCheckBox* _cbColor;
 	wxSlider* _sRotation;
 	wxSlider* _sTilt;
+
+	void _repaint();
+
+	std::function<double(double, double)> _function;
+	int _rotation = 0;
+	int _tilt = 0;
+	bool _color = false;
 public:
 	MainFrame();
 };
