@@ -18,7 +18,7 @@ private:
 
 	std::function<double(double, double)> _function;
 	int _rotation = 0;
-	int _tilt = 0;
+	int _tilt = 50;
 	bool _color = false;
 public:
 	MainFrame();

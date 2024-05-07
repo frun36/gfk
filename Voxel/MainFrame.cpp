@@ -1,7 +1,8 @@
 #include "MainFrame.hpp"
+#include "Linalg.hpp"
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(800, 1200)) {
-	this->SetSizeHints(wxDefaultSize, wxSize(530, 650));
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)) {
+	/*this->SetSizeHints(wxDefaultSize, wxSize(530, 650));*/
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -137,5 +138,26 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 }
 
 void MainFrame::_repaint() {
+	auto transform = Matrix::identity()
+		.translate(-250, -250)
+		.scale(0.75, 0.75)
+		.shear(-0.1, 0)
+		.scale(1, (50 + _tilt) / 200.)
+		.translate(250, 250);
 
+	auto a = transform * Vector(0, 0);
+	auto b = transform * Vector(499, 0);
+	auto c = transform * Vector(499, 499);
+	auto d = transform * Vector(0, 499);
+
+	wxClientDC dc(_canvas);
+
+	wxPointList* points = new wxPointList();
+
+	points->Append(new wxPoint(a.getX(), a.getY()));
+	points->Append(new wxPoint(b.getX(), b.getY()));
+	points->Append(new wxPoint(c.getX(), c.getY()));
+	points->Append(new wxPoint(d.getX(), d.getY()));
+
+	dc.DrawPolygon(points);
 }
