@@ -3,7 +3,7 @@
 #include "Plot.hpp"
 #include <wx/dcbuffer.h>
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)), _config() {
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)), _config(Function::F1) {
 	/*this->SetSizeHints(wxDefaultSize, wxSize(530, 650));*/
 
 	wxBoxSizer* bSizer1;
@@ -79,22 +79,22 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	_button1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_config.setFunction([](double x, double y) { return x + y; });
+		_config.setFunction(Function::F1);
 		_canvas->Refresh();
 		});
 
 	_button2->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_config.setFunction([](double x, double y) { return x + y; });
+		_config.setFunction(Function::F2);
 		_canvas->Refresh();
 		});
 
 	_button3->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_config.setFunction([](double x, double y) { return x + y; });
+		_config.setFunction(Function::F3);
 		_canvas->Refresh();
 		});
 
 	_button4->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
-		_config.setFunction([](double x, double y) { return x + y; });
+		_config.setFunction(Function::F4);
 		_canvas->Refresh();
 		});
 
