@@ -1,5 +1,6 @@
 #include "MainFrame.hpp"
 #include "Linalg.hpp"
+#include <wx/dcbuffer.h>
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxSize(530, 750)) {
 	/*this->SetSizeHints(wxDefaultSize, wxSize(530, 650));*/
@@ -74,6 +75,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Voxel", wxDefaultPosition, wxS
 	bSizer1->Add(_sTilt, 0, wxALL | wxEXPAND, 5);
 
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint(); });
+	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	_button1->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
 		_function = [](double x, double y) { return x + y;  };
@@ -145,19 +147,36 @@ void MainFrame::_repaint() {
 		.scale(1, (50 + _tilt) / 200.)
 		.translate(250, 250);
 
-	auto a = transform * Vector(0, 0);
-	auto b = transform * Vector(499, 0);
-	auto c = transform * Vector(499, 499);
-	auto d = transform * Vector(0, 499);
+	wxClientDC dc1(_canvas);
+	wxBufferedDC dc(&dc1);
 
-	wxClientDC dc(_canvas);
+	dc.Clear();
+	dc.SetPen(*wxTRANSPARENT_PEN);
 
-	wxPointList* points = new wxPointList();
+	for (int x = 0; x < 500; x += 10) {
+		for (int y = 0; y < 500; y += 10) {
+			auto p = transform * Vector(x, y);
+			float xFun = (x - 250) * 0.01;
+			float yFun = (y - 250) * 0.01;
+			auto height = 100 * exp(- xFun*xFun - yFun*yFun);
+			wxBrush b;
+			b.SetColour(height, height, height);
+			dc.SetBrush(b);
+			dc.DrawRectangle(p.getX(), p.getY(), 10, -height);
+		}
+	}
 
-	points->Append(new wxPoint(a.getX(), a.getY()));
-	points->Append(new wxPoint(b.getX(), b.getY()));
-	points->Append(new wxPoint(c.getX(), c.getY()));
-	points->Append(new wxPoint(d.getX(), d.getY()));
+	//auto a = transform * Vector(0, 0);
+	//auto b = transform * Vector(499, 0);
+	//auto c = transform * Vector(499, 499);
+	//auto d = transform * Vector(0, 499);
 
-	dc.DrawPolygon(points);
+	//wxPointList* points = new wxPointList();
+
+	//points->Append(new wxPoint(a.getX(), a.getY()));
+	//points->Append(new wxPoint(b.getX(), b.getY()));
+	//points->Append(new wxPoint(c.getX(), c.getY()));
+	//points->Append(new wxPoint(d.getX(), d.getY()));
+
+	//dc.DrawPolygon(points);
 }
