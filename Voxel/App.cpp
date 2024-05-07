@@ -5,6 +5,8 @@
 class App : public wxApp {
 public:
 	bool OnInit() {
+		srand(376257);
+
 		SetProcessDPIAware();
 		MainFrame* frame = new MainFrame();
 

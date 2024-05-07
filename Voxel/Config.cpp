@@ -1,8 +1,6 @@
 #include "Config.hpp"
 
 void Config::_prepareFunctionData() {
-	srand(376257);
-
 	std::vector<std::array<double, 3>> functionData;
 	double x, y;
 	switch (_function) {

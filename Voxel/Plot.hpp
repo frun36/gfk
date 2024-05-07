@@ -16,4 +16,6 @@ public:
 	static wxColour getVoxelColor(double z, bool color);
 
 	static double getFunctionValue(double x, double y, const std::vector<std::array<double, 3>>& functionData);
+
+	static wxColour heatmap(double val);
 };

@@ -31,26 +31,30 @@ void Plot::draw(wxDC& dc) const {
 		}
 	}
 
-	for (auto &p : grid) {
+	for (auto& p : grid) {
 		auto pVoxel = plotTransform * Vector(p[0], p[1]);
 		double z = p[2];
 		z = (z - min) / (max - min);
 		wxBrush b;
 		b.SetColour(getVoxelColor(z, _config.getColor()));
 		dc.SetBrush(b);
-		dc.DrawRectangle(pVoxel.getX(), pVoxel.getY(), _voxelWidth, std::min(-5., - 50 * z));
+		dc.DrawRectangle(pVoxel.getX(), pVoxel.getY(), _voxelWidth, std::min(-5., -50 * z));
 	}
 }
 
 wxColour Plot::getVoxelColor(double z, bool color) {
-	return color ? wxColour(255 * z, 0, 255 * (1 - z)) : wxColour(255 * z, 255 * z, 255 * z);
+
+	return
+		color ?
+		heatmap(z) :
+		wxColour(255 * z, 255 * z, 255 * z);
 }
 
 double Plot::getFunctionValue(double x, double y, const std::vector<std::array<double, 3>>& functionData) {
 	// Shepard's method
 	double numerator = 0, denominator = 0;
 	double x_k, y_k, z_k, w_k;
-	for (auto &data: functionData) {
+	for (auto& data : functionData) {
 		x_k = data[0];
 		y_k = data[1];
 		z_k = data[2];
@@ -63,4 +67,24 @@ double Plot::getFunctionValue(double x, double y, const std::vector<std::array<d
 		denominator += w_k;
 	}
 	return numerator / denominator;
+}
+
+wxColour Plot::heatmap(double val) {
+	constexpr int NUM_COLORS = 4;
+	const double positions[NUM_COLORS] = { 0.0, 0.25, 0.75, 1.0 };
+	const int red[NUM_COLORS] = { 0, 0, 255, 255 };
+	const int green[NUM_COLORS] = { 0, 255, 255, 0 };
+	const int blue[NUM_COLORS] = { 255, 255, 0, 0 };
+
+	int index = 0;
+	while (index < NUM_COLORS - 1 && val > positions[index + 1]) {
+		index++;
+	}
+
+	double fraction = (val - positions[index]) / (positions[index + 1] - positions[index]);
+	int r = red[index] + static_cast<int>(fraction * (red[index + 1] - red[index]));
+	int g = green[index] + static_cast<int>(fraction * (green[index + 1] - green[index]));
+	int b = blue[index] + static_cast<int>(fraction * (blue[index + 1] - blue[index]));
+
+	return wxColour(r, g, b);
 }
