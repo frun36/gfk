@@ -1,7 +1,6 @@
 #include "MainFrame.hpp"
 #include <vector>
 
-//#include "CImg.h"
 #include "FreeImagePlus.h"
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPosition, wxDefaultSize) {
@@ -38,7 +37,21 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint();  });
 
 	_bLoad->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { _loadImage(); });
+	
+	_bCensor->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+		auto cImg = wxImageAsCImg(_imgOrg);
 
+		int x0 = 460;
+		int y0 = 10;
+		int dx = 120;
+		int dy = 100;
+		auto cropped = cImg.get_crop(x0, y0, x0 + dx, y0 + dy);
+		cropped.blur(8);
+		cImg.draw_image(x0, y0, cropped);
+
+		_imgMod = cImgAsWxImage(cImg);
+		_canvas->Refresh();
+		});
 }
 
 void MainFrame::_repaint() {
@@ -51,10 +64,12 @@ void MainFrame::_repaint() {
 }
 
 void MainFrame::_loadImage() {
-	wxFileDialog loadFileDialog(this, "Choose a file", "", "", "Image Files (*.jpg)|*.jpg");
-	if (loadFileDialog.ShowModal() == wxID_CANCEL) return;
+	//wxFileDialog loadFileDialog(this, "Choose a file", "", "", "Image Files (*.jpg)|*.jpg");
+	//if (loadFileDialog.ShowModal() == wxID_CANCEL) return;
 
-	wxString path = loadFileDialog.GetPath();
+	//wxString path = loadFileDialog.GetPath();
+
+	wxString path = "test.jpg";
 
 	_handleExif(path);
 
@@ -89,3 +104,47 @@ void MainFrame::_handleExif(const wxString& name) {
 
 	_teExif->SetLabelText(info);
 }
+
+cimg_library::CImg<unsigned char> MainFrame::wxImageAsCImg(const wxImage& img) {
+	cimg_library::CImg<unsigned char> newImg(img.GetWidth(), img.GetHeight(), 1, 3);
+
+	/*size_t size = img.GetWidth() * img.GetHeight() * 3;
+
+	unsigned char* data = (unsigned char*)malloc(size);
+	memcpy(data, img.GetData(), size);
+
+	newImg.assign(data, img.GetWidth(), img.GetHeight(), 1, 3);*/
+
+	for (size_t y = 0; y < img.GetHeight(); y++)	{
+		for (size_t x = 0; x < img.GetWidth(); x++) {
+			newImg(x, y, 0, 0) = img.GetRed(x, y);
+			newImg(x, y, 0, 1) = img.GetGreen(x, y);
+			newImg(x, y, 0, 2) = img.GetBlue(x, y);
+		}
+	}
+
+	return newImg;
+}
+
+wxImage MainFrame::cImgAsWxImage(const cimg_library::CImg<unsigned char>& img) {
+	wxImage newImg(img.width(), img.height());
+
+	/*size_t size = newImg.GetWidth() * newImg.GetHeight() * 3;
+
+	unsigned char* data = (unsigned char*)malloc(size);
+
+	memcpy(data, img.data(), size);
+
+	newImg.SetData(data);*/
+
+	for (size_t y = 0; y < img.height(); y++) {
+		for (size_t x = 0; x < img.width(); x++) {
+			newImg.SetRGB(x, y, img(x, y, 0, 0), img(x, y, 0, 1), img(x, y, 0, 2));
+		}
+	}
+
+	return newImg;
+}
+
+
+

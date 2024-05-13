@@ -2,6 +2,8 @@
 
 #include <wx/wx.h>
 
+#include "CImg.h"
+
 class MainFrame : public wxFrame {
 private:
 	wxPanel* _canvas;
@@ -17,6 +19,8 @@ private:
 
 	void _loadImage();
 	void _handleExif(const wxString& name);
+	static cimg_library::CImg<unsigned char> wxImageAsCImg(const wxImage& img);
+	static wxImage cImgAsWxImage(const cimg_library::CImg<unsigned char>& img);
 public:
 	MainFrame();
 };
