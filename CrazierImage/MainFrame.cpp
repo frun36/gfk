@@ -1,6 +1,10 @@
 #include "MainFrame.hpp"
+#include <vector>
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition, wxDefaultSize) {
+//#include "CImg.h"
+#include "FreeImagePlus.h"
+
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPosition, wxDefaultSize) {
 	// Create the main sizer for the frame
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -25,15 +29,63 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Main Frame", wxDefaultPosition
 	SetSizer(mainSizer);
 
 	// Create the canvas
-	_canvas = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(960, 540), wxTAB_TRAVERSAL);
+	_canvas = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(800, 533), wxTAB_TRAVERSAL);
 	_canvas->SetBackgroundColour(wxColor(0, 0, 0));
 	mainSizer->Add(_canvas, 1, wxEXPAND | wxALL, 5);
 	Fit();
 
 	// Events
-	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { /*_repaint();*/  });
+	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint();  });
+
+	_bLoad->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { _loadImage(); });
+
 }
 
 void MainFrame::_repaint() {
-	
+	if (!_imgMod.IsOk()) return;
+
+	wxClientDC dc(_canvas);
+	_imgMod.Rescale(_canvas->GetSize().x, _canvas->GetSize().y);
+	wxBitmap bmp(_imgMod);
+	dc.DrawBitmap(bmp, 0, 0);
+}
+
+void MainFrame::_loadImage() {
+	wxFileDialog loadFileDialog(this, "Choose a file", "", "", "Image Files (*.jpg)|*.jpg");
+	if (loadFileDialog.ShowModal() == wxID_CANCEL) return;
+
+	wxString path = loadFileDialog.GetPath();
+
+	_handleExif(path);
+
+	if (!_imgOrg.LoadFile(path)) {
+		wxMessageBox("Couldn't open image");
+		return;
+	}
+
+	_imgMod = _imgOrg.Copy();
+
+	Refresh();
+}
+
+void MainFrame::_handleExif(const wxString& name) {
+	fipImage img;
+	img.load(name);
+
+	unsigned width = img.getWidth();
+	unsigned height = img.getHeight();
+
+	if (!img.isValid())
+		wxMessageBox("Couldn't load image");
+
+	fipTag tag;
+	fipMetadataFind finder;
+
+	wxString info = "";
+
+	if (finder.findFirstMetadata(FIMD_EXIF_MAIN, img, tag)) do {
+		info += wxString::Format("%s: %s\r\n", tag.getKey(), tag.toString(FIMD_EXIF_MAIN));
+	} while (finder.findNextMetadata(tag));
+
+	_teExif->SetLabelText(info);
 }

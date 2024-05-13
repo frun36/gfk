@@ -11,7 +11,12 @@ private:
 	wxCheckBox* _cbAnimate;
 	wxTextCtrl* _teExif;
 
+	wxImage _imgOrg, _imgMod;
+
 	void _repaint();
+
+	void _loadImage();
+	void _handleExif(const wxString& name);
 public:
 	MainFrame();
 };
