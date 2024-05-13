@@ -52,6 +52,15 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 		_imgMod = cImgAsWxImage(cImg);
 		_canvas->Refresh();
 		});
+
+	_bErode->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
+		auto cImg = wxImageAsCImg(_imgOrg);
+
+		cImg.erode(10, 10, 10);
+
+		_imgMod = cImgAsWxImage(cImg);
+		_canvas->Refresh();
+		});
 }
 
 void MainFrame::_repaint() {
