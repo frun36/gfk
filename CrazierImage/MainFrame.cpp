@@ -40,7 +40,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 	_canvas->Bind(wxEVT_UPDATE_UI, [this](wxUpdateUIEvent&) { _repaint();  });
 
 	_bLoad->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { _loadImage(); });
-	
+
 	_bCensor->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		auto cImg = wxImageAsCImg(_imgOrg);
 
@@ -71,7 +71,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 		unsigned width = _imgOrg.GetWidth();
 		unsigned height = _imgOrg.GetHeight();
 
-		float color[] = {1, 1, 1};
+		float color[] = { 1, 1, 1 };
 
 		for (size_t i = 0; i < 60; i++) {
 			_gAnimation->SetValue(i);
@@ -91,7 +91,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 				100.,
 				color,
 				1.);
-			
+
 			gaussian0 += gaussian1;
 
 			cimg_library::CImg<float> result = wxImageAsCImg(_imgOrg);
@@ -120,12 +120,10 @@ void MainFrame::_repaint() {
 }
 
 void MainFrame::_loadImage() {
-	//wxFileDialog loadFileDialog(this, "Choose a file", "", "", "Image Files (*.jpg)|*.jpg");
-	//if (loadFileDialog.ShowModal() == wxID_CANCEL) return;
+	wxFileDialog loadFileDialog(this, "Choose a file", "", "", "Image Files (*.jpg)|*.jpg");
+	if (loadFileDialog.ShowModal() == wxID_CANCEL) return;
 
-	//wxString path = loadFileDialog.GetPath();
-
-	wxString path = "test.jpg";
+	wxString path = loadFileDialog.GetPath();
 
 	_handleExif(path);
 
@@ -143,16 +141,16 @@ void MainFrame::_handleExif(const wxString& name) {
 	fipImage img;
 	img.load(name);
 
-	unsigned width = img.getWidth();
-	unsigned height = img.getHeight();
-
 	if (!img.isValid())
 		wxMessageBox("Couldn't load image");
 
+	unsigned width = img.getWidth();
+	unsigned height = img.getHeight();
+
+	wxString info = wxString::Format("Size: %u x %u\r\n", width, height);
+
 	fipTag tag;
 	fipMetadataFind finder;
-
-	wxString info = "";
 
 	if (finder.findFirstMetadata(FIMD_EXIF_MAIN, img, tag)) do {
 		info += wxString::Format("%s: %s\r\n", tag.getKey(), tag.toString(FIMD_EXIF_MAIN));
@@ -164,7 +162,7 @@ void MainFrame::_handleExif(const wxString& name) {
 cimg_library::CImg<unsigned char> MainFrame::wxImageAsCImg(const wxImage& img) {
 	cimg_library::CImg<unsigned char> newImg(img.GetWidth(), img.GetHeight(), 1, 3);
 
-	for (size_t y = 0; y < img.GetHeight(); y++)	{
+	for (size_t y = 0; y < img.GetHeight(); y++) {
 		for (size_t x = 0; x < img.GetWidth(); x++) {
 			newImg(x, y, 0, 0) = img.GetRed(x, y);
 			newImg(x, y, 0, 1) = img.GetGreen(x, y);
