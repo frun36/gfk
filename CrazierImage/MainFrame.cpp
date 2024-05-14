@@ -15,12 +15,14 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 	_bCensor = new wxButton(this, wxID_ANY, "Censor");
 	_bErode = new wxButton(this, wxID_ANY, "Erode");
 	_cbAnimate = new wxCheckBox(this, wxID_ANY, "Animate");
+	_gAnimation = new wxGauge(this, wxID_ANY, 59);
 	_teExif = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_NO_VSCROLL);
 
 	menuSizer->Add(_bLoad, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_bCensor, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_bErode, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_cbAnimate, 0, wxEXPAND | wxALL, 5);
+	menuSizer->Add(_gAnimation, 0, wxEXPAND | wxALL, 5);
 	menuSizer->Add(_teExif, 1, wxEXPAND | wxALL, 5);
 
 
@@ -30,6 +32,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 	// Create the canvas
 	_canvas = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(800, 533), wxTAB_TRAVERSAL);
 	_canvas->SetBackgroundColour(wxColor(0, 0, 0));
+	_canvas->SetBackgroundStyle(wxBG_STYLE_PAINT);
 	mainSizer->Add(_canvas, 1, wxEXPAND | wxALL, 5);
 	Fit();
 
@@ -61,15 +64,59 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "CrazierImage", wxDefaultPositi
 		_imgMod = cImgAsWxImage(cImg);
 		_canvas->Refresh();
 		});
+
+	_cbAnimate->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& e) {
+		if (!e.IsChecked()) return;
+
+		unsigned width = _imgOrg.GetWidth();
+		unsigned height = _imgOrg.GetHeight();
+
+		float color[] = {1, 1, 1};
+
+		for (size_t i = 0; i < 60; i++) {
+			_gAnimation->SetValue(i);
+
+			auto gaussian0 = cimg_library::CImg<float>(width, height, 1, 3);
+			gaussian0.draw_gaussian(
+				(width * 0.5) + (width * 0.25) * cos(i * M_PI / 60.),
+				(height * 0.5) + (height * 0.25) * sin(i * M_PI / 60.),
+				100.,
+				color,
+				1.);
+
+			auto gaussian1 = cimg_library::CImg<float>(width, height, 1, 3);
+			gaussian1.draw_gaussian(
+				(width * 0.5) + (width * 0.25) * cos((i + 60.) * M_PI / 60.),
+				(height * 0.5) + (height * 0.25) * sin((i + 60.) * M_PI / 60.),
+				100.,
+				color,
+				1.);
+			
+			gaussian0 += gaussian1;
+
+			cimg_library::CImg<float> result = wxImageAsCImg(_imgOrg);
+			result.mul(gaussian0);
+			_frames[59 - i] = cImgAsWxImage(result);
+		}
+		_canvas->Refresh();
+		});
 }
 
 void MainFrame::_repaint() {
 	if (!_imgMod.IsOk()) return;
 
+	if (_cbAnimate->IsChecked())
+		_imgMod = _frames[_currFrame];
+
 	wxClientDC dc(_canvas);
 	_imgMod.Rescale(_canvas->GetSize().x, _canvas->GetSize().y);
 	wxBitmap bmp(_imgMod);
 	dc.DrawBitmap(bmp, 0, 0);
+
+	_currFrame = (_currFrame + 1) % 60;
+
+	if (_cbAnimate->IsChecked())
+		_canvas->Refresh();
 }
 
 void MainFrame::_loadImage() {
@@ -117,13 +164,6 @@ void MainFrame::_handleExif(const wxString& name) {
 cimg_library::CImg<unsigned char> MainFrame::wxImageAsCImg(const wxImage& img) {
 	cimg_library::CImg<unsigned char> newImg(img.GetWidth(), img.GetHeight(), 1, 3);
 
-	/*size_t size = img.GetWidth() * img.GetHeight() * 3;
-
-	unsigned char* data = (unsigned char*)malloc(size);
-	memcpy(data, img.GetData(), size);
-
-	newImg.assign(data, img.GetWidth(), img.GetHeight(), 1, 3);*/
-
 	for (size_t y = 0; y < img.GetHeight(); y++)	{
 		for (size_t x = 0; x < img.GetWidth(); x++) {
 			newImg(x, y, 0, 0) = img.GetRed(x, y);
@@ -137,14 +177,6 @@ cimg_library::CImg<unsigned char> MainFrame::wxImageAsCImg(const wxImage& img) {
 
 wxImage MainFrame::cImgAsWxImage(const cimg_library::CImg<unsigned char>& img) {
 	wxImage newImg(img.width(), img.height());
-
-	/*size_t size = newImg.GetWidth() * newImg.GetHeight() * 3;
-
-	unsigned char* data = (unsigned char*)malloc(size);
-
-	memcpy(data, img.data(), size);
-
-	newImg.SetData(data);*/
 
 	for (size_t y = 0; y < img.height(); y++) {
 		for (size_t x = 0; x < img.width(); x++) {
